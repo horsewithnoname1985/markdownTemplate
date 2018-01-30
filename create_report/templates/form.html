@@ -1,0 +1,68 @@
+<!-- base.html is inherited and <body> block is overwritten -->
+
+{% extends 'base.html' %}
+
+{% block body %}
+<h2>Choose your template settings</h2>
+<form method="POST" action="/create_template">
+
+    <table>
+        <tr>
+            <td>
+                Title:
+            </td>
+            <td>
+                <input name="title" type="text" width="70">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Author:
+            </td>
+            <td>
+                <input name="author" type="text" width="20">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Date:
+            </td>
+            <td>
+                <input name="date" type="date">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Project:
+            </td>
+            <td>
+                <input name="project" type="text" width="20">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Language:
+            </td>
+            <td>
+                <input name="language" type="radio" value="lang_de" id="lang_de">
+                <label for="lang_de">German</label>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input name="language" type="radio" value="lang_en" id="lang_en">
+                <label for="lang_en">English</label>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input name="submit" type="submit" value="Create template">
+            </td>
+        </tr>
+
+    </table>
+
+</form>
+{% endblock %}
