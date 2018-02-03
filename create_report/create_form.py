@@ -12,13 +12,16 @@ Please note, that pandoc must be installed to create the HTML file (see
 https://pandoc.org/)
 """
 
-from flask import Flask, render_template, request, send_file, \
-    send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, \
+    current_app, send_file, send_from_directory
 from os.path import basename
 import zipfile
 import os
 
+UPLOAD_FOLDER = "output/"
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 @app.route('/')
@@ -26,7 +29,7 @@ def form_page() -> 'html':
     return render_template('form.html')
 
 
-@app.route('/create_template', methods=['POST'])
+@app.route('/create_template', methods=['POST', "GET"])
 def create_template():
     language = request.form['language']
     author = request.form['author']
@@ -34,13 +37,6 @@ def create_template():
     title = request.form['title']
     project = request.form['project']
     filename = request.form['filename']
-
-    # print(language)
-    # print(author)
-    # print(date)
-    # print(title)
-    # print(project)
-    # print(filename)
 
     stylesheet_dir = "files/E+L_style.css"
     el_template = "files/el_template_en.html"
@@ -54,8 +50,6 @@ def create_template():
     files = [el_template, markdown_templ, stylesheet_dir, script_files[0],
              script_files[1]]
 
-    # print(files)
-
     create_zip_template_files("output/el_markdown_template_files.zip", files)
     os.remove(markdown_templ)
 
@@ -64,19 +58,49 @@ def create_template():
 
     return render_template("download_ready.html")
 
+# ISSUE: The false zip file is downloaded after the first initiation of a
+# template file (from second one on it is always the first one, except the path
+# for the zip file is changed, but then it also only works once
+# HYPOTHESIS: The file is created locally (works every time) but is not
+# transferred to the host directory, because it already does exist after the
+# first creation (Click download: There is already an equally named zip file at
+# the called location, so we don't need to take any new one in the local
+# directory
+# POSSIBLE SOLUTION: Delete the zip file from the host (not the local dir)
+# after it has been downloaded
+# ANOTHER POSSIBLE SOLUTION: Make the zip file to be directly stored at the
+# host address (not at the local dir) ... don't know, if that's possible
 
-@app.route("/get_templates_files")
-def download():
-    print(os.getcwd())
+# TODO: Find a way to delete the zip file from the host after being download
+# TODO: Find a way to directly put the zip file in the host output dir
+
+
+@app.route("/output/<path:filename>", methods=["GET", "POST"])
+def download(filename):
+    # print(os.getcwd())
+    # print("I am being printed!")
+    # return send_file("output/el_markdown_template_files.zip",
+    #                  mimetype="application/zip", as_attachment=True)
+
+    upload = os.path.join(current_app.root_path, app.config['UPLOAD_FOLDER'])
+    return send_from_directory(directory='output', filename=filename,
+                               as_attachment=True)
+
     # return print("Haha!")
     # return send_file("output/el_markdown_template_files.zip",
     #                  mimetype="application/zip",
     #                  attachment_filename="el_markdown_template_files.zip",
     #                  as_attachment=False)
-    response = send_from_directory("./output", 'el_markdown_template_files.zip',
-                                   as_attachment=True)
-    response.headers["Content-Type"] = "application/zip"
-    return response
+
+    # return send_from_directory(directory=uploads,
+    #                            filename="el_markdown_template_files.zip")
+
+    # response = send_from_directory(directory="output",
+    #                                filename='el_markdown_template_files.zip',
+    #                                as_attachment=True)
+    # response.headers["Content-Type"] = "application/zip"
+    # return response
+
 
 # TODO: Wrong zip file is offered for download -> find fix
 

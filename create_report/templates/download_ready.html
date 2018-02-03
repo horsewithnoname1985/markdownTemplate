@@ -5,6 +5,6 @@
 {% block body %}
 
 <h2>Successfully created template file</h2>
-<h3>Click <a href="/get_templates_files">here</a> to download your files</h3>
-
+<!--<a href="/output/el_markdown_template_files.zip">CLick me</a>-->
+<td><a href="{{ url_for('static', filename='el_markdown_template_files.zip') }}">Click me</a></td>
 {% endblock %}
