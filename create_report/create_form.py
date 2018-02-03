@@ -12,12 +12,13 @@ Please note, that pandoc must be installed to create the HTML file (see
 https://pandoc.org/)
 """
 
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_file, \
+    send_from_directory
 from os.path import basename
 import zipfile
 import os
 
-app = Flask(__name__, static_folder="/")
+app = Flask(__name__)
 
 
 @app.route('/')
@@ -32,40 +33,83 @@ def create_template():
     date = request.form['date']
     title = request.form['title']
     project = request.form['project']
+    filename = request.form['filename']
+
+    # print(language)
+    # print(author)
+    # print(date)
+    # print(title)
+    # print(project)
+    # print(filename)
 
     stylesheet_dir = "files/E+L_style.css"
     el_template = "files/el_template_en.html"
-    markdown_templ = str(create_markdown_file(author, title, date,
-                                              project, language))
-
-    if language == 'DE':
+    if language == 'lang_de':
         el_template = "files/el_template_de.html"
+    markdown_templ = str(create_markdown_file(author, title, date,
+                                              project, language, filename))
+    script_files = create_script_files(
+        os.path.basename(markdown_templ), os.path.basename(el_template))
 
-    files = [el_template, markdown_templ, stylesheet_dir]
+    files = [el_template, markdown_templ, stylesheet_dir, script_files[0],
+             script_files[1]]
 
-    zip_template_files("el_markdown_template_files.zip", files)
+    # print(files)
+
+    create_zip_template_files("output/el_markdown_template_files.zip", files)
     os.remove(markdown_templ)
+
+    for file in script_files:
+        os.remove(file)
 
     return render_template("download_ready.html")
 
 
-@app.route('/el_markdown_template_files.zip', methods=['GET'])
+@app.route("/get_templates_files")
 def download():
-    return send_from_directory(directory="",
-                               filename="el_markdown_template_files.zip",
-                               as_attachment=False, mimetype="application/zip")
+    print(os.getcwd())
+    # return print("Haha!")
+    # return send_file("output/el_markdown_template_files.zip",
+    #                  mimetype="application/zip",
+    #                  attachment_filename="el_markdown_template_files.zip",
+    #                  as_attachment=False)
+    response = send_from_directory("./output", 'el_markdown_template_files.zip',
+                                   as_attachment=True)
+    response.headers["Content-Type"] = "application/zip"
+    return response
+
+# TODO: Wrong zip file is offered for download -> find fix
+
 # TODO: Find a way to delete the *.zip file after download
 
 
-def zip_template_files(archive_file, files) -> 'zip_file':
-    myfile = zipfile.ZipFile(archive_file, "w", )
+def create_script_files(markdown_file, template_file):
+    bash_script = open("files/make_html" + ".bat", "w")
+    shell_script = open("files/make_html" + ".sh", "w")
+    script_files = [bash_script, shell_script]
+
+    for file in script_files:
+        file.write(
+            "pandoc -f markdown --template=" + template_file
+            + " --css E+L_style.css " + "\"" + markdown_file + "\"" + " -o "
+            + "\"" + markdown_file.rstrip(".markdown") + ".html" + "\"")
+
+    bash_script.close()
+    shell_script.close()
+
+    return [bash_script.name, shell_script.name]
+
+
+def create_zip_template_files(archive_file, files) -> 'zip_file':
+    myfile = zipfile.ZipFile(archive_file, "w")
     for file in files:
         myfile.write(file, basename(file))
+        print(file)
     myfile.close()
 
 
-def create_markdown_file(author, title, date, project, language):
-    template = open("files/" + title + "_v1.0.markdown", "w")
+def create_markdown_file(author, title, date, project, language, filename):
+    template = open("files/" + filename + "_v1.0.markdown", "w")
     template.write("---" + "\n")
     template.write("author: " + author + "\n")
     template.write("project: " + project + "\n")
@@ -101,8 +145,6 @@ def create_markdown_file(author, title, date, project, language):
     template.close()
 
     return template.name
-
-# TODO: Create a function that creates script files and add these to zip file
 
 
 app.run(debug=True)
