@@ -29,7 +29,7 @@ def form_page() -> 'html':
     return render_template('form.html')
 
 
-@app.route('/create_template', methods=['POST', "GET"])
+# @app.route('/create_template', methods=['POST', "GET"])
 def create_template():
     language = request.form['language']
     author = request.form['author']
@@ -50,13 +50,16 @@ def create_template():
     files = [el_template, markdown_templ, stylesheet_dir, script_files[0],
              script_files[1]]
 
-    create_zip_template_files("output/el_markdown_template_files.zip", files)
+    myfile_outputdir = "output/el_markdown_template_files.zip"
+    create_zip_template_files(myfile_outputdir, files)
     os.remove(markdown_templ)
 
     for file in script_files:
         os.remove(file)
 
-    return render_template("download_ready.html")
+    return myfile_outputdir
+
+    # return render_template("download_ready.html")
 
 # ISSUE:
 # The false zip file is downloaded after the first initiation of a
@@ -82,6 +85,12 @@ def create_template():
 # TODO: Find a way to delete the zip file from the host after being download
 # TODO: Put the zip file creation + download into one method -> call on submit
 # TODO: Find a way to directly put the zip file in the host output dir
+
+
+@app.route('/create_template', methods=['POST', "GET"])
+def create_plus_download():
+    templatezipfile = create_template()
+    return send_file(templatezipfile, as_attachment=True)
 
 
 @app.route("/output/<path:filename>", methods=["GET", "POST"])
@@ -139,6 +148,8 @@ def create_zip_template_files(archive_file, files) -> 'zip_file':
         myfile.write(file, basename(file))
         print(file)
     myfile.close()
+
+    return myfile
 
 
 def create_markdown_file(author, title, date, project, language, filename):
