@@ -58,7 +58,8 @@ def create_template():
 
     return render_template("download_ready.html")
 
-# ISSUE: The false zip file is downloaded after the first initiation of a
+# ISSUE:
+# The false zip file is downloaded after the first initiation of a
 # template file (from second one on it is always the first one, except the path
 # for the zip file is changed, but then it also only works once
 # HYPOTHESIS: The file is created locally (works every time) but is not
@@ -66,12 +67,20 @@ def create_template():
 # first creation (Click download: There is already an equally named zip file at
 # the called location, so we don't need to take any new one in the local
 # directory
-# POSSIBLE SOLUTION: Delete the zip file from the host (not the local dir)
+#
+# 1. SOLUTION:
+# Delete the zip file from the host (not the local dir)
 # after it has been downloaded
-# ANOTHER POSSIBLE SOLUTION: Make the zip file to be directly stored at the
+# 2. SOLUTION:
+# Create the zip file and start the download within the same
+# method. This method is supposed to be called when the 'Submit' button of the
+# form is clicked, e.g. the download page is obsolete
+# 3. ANOTHER POSSIBLE SOLUTION:
+# Make the zip file to be directly stored at the
 # host address (not at the local dir) ... don't know, if that's possible
 
 # TODO: Find a way to delete the zip file from the host after being download
+# TODO: Put the zip file creation + download into one method -> call on submit
 # TODO: Find a way to directly put the zip file in the host output dir
 
 
