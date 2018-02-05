@@ -3,6 +3,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<div class="mainframe">
 <h2>Welcome to the markdown template creation!</h2>
 <p>1) Please enter your template data</p>
 <form method="POST" action="/create_template">
@@ -71,6 +72,6 @@
     <p>2) Click 'Create template' to get your template files</p>
     <input class="submit" name="submit" type="submit" value="Create template">
 
-
 </form>
+</div>
 {% endblock %}

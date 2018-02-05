@@ -12,8 +12,7 @@ Please note, that pandoc must be installed to create the HTML file (see
 https://pandoc.org/)
 """
 
-from flask import Flask, render_template, request, redirect, url_for, \
-    current_app, send_file, send_from_directory
+from flask import Flask, render_template, request, send_file
 from os.path import basename
 import zipfile
 import os
@@ -29,7 +28,6 @@ def form_page() -> 'html':
     return render_template('form.html')
 
 
-# @app.route('/create_template', methods=['POST', "GET"])
 def create_template():
     language = request.form['language']
     author = request.form['author']
@@ -37,6 +35,8 @@ def create_template():
     title = request.form['title']
     project = request.form['project']
     filename = request.form['filename']
+
+    print("Language selection" + str(language))
 
     stylesheet_dir = "files/E+L_style.css"
     el_template = "files/el_template_en.html"
@@ -59,33 +59,6 @@ def create_template():
 
     return myfile_outputdir
 
-    # return render_template("download_ready.html")
-
-# ISSUE:
-# The false zip file is downloaded after the first initiation of a
-# template file (from second one on it is always the first one, except the path
-# for the zip file is changed, but then it also only works once
-# HYPOTHESIS: The file is created locally (works every time) but is not
-# transferred to the host directory, because it already does exist after the
-# first creation (Click download: There is already an equally named zip file at
-# the called location, so we don't need to take any new one in the local
-# directory
-#
-# 1. SOLUTION:
-# Delete the zip file from the host (not the local dir)
-# after it has been downloaded
-# 2. SOLUTION:
-# Create the zip file and start the download within the same
-# method. This method is supposed to be called when the 'Submit' button of the
-# form is clicked, e.g. the download page is obsolete
-# 3. ANOTHER POSSIBLE SOLUTION:
-# Make the zip file to be directly stored at the
-# host address (not at the local dir) ... don't know, if that's possible
-
-# TODO: Find a way to delete the zip file from the host after being download
-# TODO: Put the zip file creation + download into one method -> call on submit
-# TODO: Find a way to directly put the zip file in the host output dir
-
 
 @app.route('/create_template', methods=['POST', "GET"])
 def create_plus_download():
@@ -93,51 +66,43 @@ def create_plus_download():
     return send_file(templatezipfile, as_attachment=True)
 
 
-@app.route("/output/<path:filename>", methods=["GET", "POST"])
-def download(filename):
-    # print(os.getcwd())
-    # print("I am being printed!")
-    # return send_file("output/el_markdown_template_files.zip",
-    #                  mimetype="application/zip", as_attachment=True)
-
-    upload = os.path.join(current_app.root_path, app.config['UPLOAD_FOLDER'])
-    return send_from_directory(directory='output', filename=filename,
-                               as_attachment=True)
-
-    # return print("Haha!")
-    # return send_file("output/el_markdown_template_files.zip",
-    #                  mimetype="application/zip",
-    #                  attachment_filename="el_markdown_template_files.zip",
-    #                  as_attachment=False)
-
-    # return send_from_directory(directory=uploads,
-    #                            filename="el_markdown_template_files.zip")
-
-    # response = send_from_directory(directory="output",
-    #                                filename='el_markdown_template_files.zip',
-    #                                as_attachment=True)
-    # response.headers["Content-Type"] = "application/zip"
-    # return response
-
-
-# TODO: Wrong zip file is offered for download -> find fix
-
-# TODO: Find a way to delete the *.zip file after download
-
-
 def create_script_files(markdown_file, template_file):
-    bash_script = open("files/make_html" + ".bat", "w")
-    shell_script = open("files/make_html" + ".sh", "w")
-    script_files = [bash_script, shell_script]
+    with open("files/make_html" + ".bat", "w") as bash_script:
+        print("@ECHO off", file=bash_script)
+        # TODO: Add chiffre for current file's directory
+        print("cd to my drive", file=bash_script)
+        print("pandoc -f markdown --template=" + template_file
+              + " --css E+L_style.css " + "\"" + markdown_file + "\"" + " -o "
+              + "\"" + markdown_file.rstrip(".markdown") + ".html" + "\"",
+              file=bash_script)
 
-    for file in script_files:
-        file.write(
-            "pandoc -f markdown --template=" + template_file
-            + " --css E+L_style.css " + "\"" + markdown_file + "\"" + " -o "
-            + "\"" + markdown_file.rstrip(".markdown") + ".html" + "\"")
+    with open("files/make_html" + ".sh", "w") as shell_script:
+        print("#!/bin/bash", file=shell_script)
+        print("cd \"$(dirname \"$0\")\"", file=shell_script)
+        print("pandoc -f markdown --template=" + template_file
+              + " --css E+L_style.css " + "\"" + markdown_file + "\"" + " -o "
+              + "\"" + markdown_file.rstrip(".markdown") + ".html" + "\"",
+              file=shell_script)
 
-    bash_script.close()
-    shell_script.close()
+    # script_files = [bash_script, shell_script]
+
+    # shell_script.write("#!/bin/bash\n")
+    # shell_script.write("cd \"$(dirname \"$0\")\"\n")
+    # shell_script.write(
+    #     "pandoc -f markdown --template=" + template_file
+    #     + " --css E+L_style.css " + "\"" + markdown_file + "\"" + " -o "
+    #     + "\"" + markdown_file.rstrip(".markdown") + ".html" + "\"")
+    #
+    # bash_script.write("@ECHO off\n")
+
+    # bash_script.write("cd to my drive\n)
+    # bash_script.write(
+    #     "pandoc -f markdown --template=" + template_file
+    #     + " --css E+L_style.css " + "\"" + markdown_file + "\"" + " -o "
+    #     + "\"" + markdown_file.rstrip(".markdown") + ".html" + "\"")
+    #
+    # bash_script.close()
+    # shell_script.close()
 
     return [bash_script.name, shell_script.name]
 
@@ -168,7 +133,7 @@ def create_markdown_file(author, title, date, project, language, filename):
     results_str = "Results"
     conclusion_str = "Conclusion"
 
-    if language == 'DE':
+    if language == 'lang_de':
         introduction_str = "Einleitung"
         considerations_str = "Vorüberlegungen"
         test_setup_str = "Testaufbau und -durchführung"
@@ -192,3 +157,28 @@ def create_markdown_file(author, title, date, project, language, filename):
 
 
 app.run(debug=True)
+
+# ISSUE:
+# The false zip file is downloaded after the first initiation of a
+# template file (from second one on it is always the first one, except the path
+# for the zip file is changed, but then it also only works once
+# HYPOTHESIS: The file is created locally (works every time) but is not
+# transferred to the host directory, because it already does exist after the
+# first creation (Click download: There is already an equally named zip file at
+# the called location, so we don't need to take any new one in the local
+# directory
+#
+# 1. SOLUTION:
+# Delete the zip file from the host (not the local dir)
+# after it has been downloaded
+# 2. SOLUTION:
+# Create the zip file and start the download within the same
+# method. This method is supposed to be called when the 'Submit' button of the
+# form is clicked, e.g. the download page is obsolete
+# 3. ANOTHER POSSIBLE SOLUTION:
+# Make the zip file to be directly stored at the
+# host address (not at the local dir) ... don't know, if that's possible
+
+# TODO: Find a way to delete the zip file from the host after being download
+# TODO: Put the zip file creation + download into one method -> call on submit
+# TODO: Find a way to directly put the zip file in the host output dir

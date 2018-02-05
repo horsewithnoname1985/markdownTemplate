@@ -2,10 +2,14 @@ body{
   font-family:        Verdana, Helvetica, Arial, sans-serif;
   font-size:          medium;
   line-height:        1.6em;
-  background-color:   tan;
+  background-color:   #FFFFFF;
   border:             2px solid gray;
-  padding:            10px 10px 10px 10px;
   float:              left;
+}
+
+.mainframe{
+  background-color:   tan;
+  padding:            10px 10px 10px 10px;
 }
 
 h2{
