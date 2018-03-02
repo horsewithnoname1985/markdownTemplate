@@ -2,8 +2,8 @@
 This module creates a template for a markup language document and provides the
 necessary files to transform it into an HTML document. When launching the module
 an HTML form is provided, where the user can make settings for the produced
-template. When submitting these, the template is created at a specified direct-
-ory. Specifically, the following files are created:
+template. When submitting these, the resulting files are immediately offered as
+download as a zip archive file. These contain the following files:
 - Markup language template
 - CSS file for HTML styling
 - Template HTML file
@@ -16,6 +16,7 @@ from flask import Flask, render_template, request, send_file
 from os.path import basename
 import zipfile
 import os
+import io
 
 UPLOAD_FOLDER = "output/"
 
@@ -97,7 +98,8 @@ def create_zip_template_files(archive_file, files) -> 'zipfile':
 
 def create_markdown_file(author, title, date, project, language,
                          filename) -> 'str':
-    template = open("files/" + filename + "_v1.0.markdown", "w")
+    template = io.open("files/" + filename + "_v1.0.markdown", mode="w",
+                       encoding="utf-8")
     template.write("---" + "\n")
     template.write("author: " + author + "\n")
     template.write("project: " + project + "\n")

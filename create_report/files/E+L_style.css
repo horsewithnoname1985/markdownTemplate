@@ -223,6 +223,7 @@ figcaption {
   font-size: 0.8em;
   font-style: italic;
   margin: 0 0 .8em;
+  text-align: center;
 }
 
 header img {
