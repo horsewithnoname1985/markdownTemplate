@@ -65,7 +65,7 @@ p {
   margin: 1em 0;
 }
 
-img {
+body img {
   max-width: 100%;
   display: block;
   margin: 0 auto;
@@ -227,11 +227,13 @@ figcaption {
 }
 
 header img {
-	margin-bottom: 0px;
+  margin-bottom: 0px;
   width: 120px;
+  display: inline;
 }
 
 header table {
+  width: 100%;
   border: none;
   margin-left: auto;
   margin-right: auto;
@@ -239,6 +241,7 @@ header table {
 
 header table td {
   border: none;
+  text-align: center;
 }
 
 footer {
@@ -246,7 +249,6 @@ footer {
 }
 
 table {
-  margin-bottom: 2em;
   border-bottom: 1px solid #ddd;
   border-right: 1px solid #ddd;
   border-spacing: 0;
@@ -288,12 +290,15 @@ table td {
   text-align: left;
 }
 
+td#logoImage {
+  text-align: left;
+}
+
 td#logoText {
 	vertical-align: bottom;
-  text-align: right;
+    text-align: right;
 	font-size: 2em;
 	font-family: Arial, sans-serif;
-	/* position: top right; */
 	line-height: 1.0;
 	margin: 0px, 0px, 0px, 0px;
 	padding: 0px, 0px, 0px, 0px;
@@ -356,7 +361,7 @@ td#logoText {
     page-break-inside: avoid;
   }
 
-  img {
+  body img {
     max-width: 100% !important;
   }
 

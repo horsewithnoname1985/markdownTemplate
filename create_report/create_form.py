@@ -71,17 +71,17 @@ def create_script_files(markdown_file, template_file):
     with open("files/make_html" + ".bat", "w") as bash_script:
         print("@echo off", file=bash_script)
         print("pandoc -f markdown --template=" + template_file
-              + " --css E+L_style.css " + "\"" + markdown_file + "\"" + " -o "
-              + "\"" + markdown_file.rstrip(".markdown") + ".html" + "\"",
-              file=bash_script)
+              + " --css E+L_style.css " + "-t html " + "\"" + markdown_file +
+              "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
+              ".html" + "\"", file=bash_script)
 
     with open("files/make_html" + ".sh", "w") as shell_script:
         print("#!/bin/bash", file=shell_script)
         print("cd \"$(dirname \"$0\")\"", file=shell_script)
         print("pandoc -f markdown --template=" + template_file
-              + " --css E+L_style.css " + "\"" + markdown_file + "\"" + " -o "
-              + "\"" + markdown_file.rstrip(".markdown") + ".html" + "\"",
-              file=shell_script)
+              + " --css E+L_style.css " + "-t html " + "\"" + markdown_file +
+              "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
+              ".html" + "\"", file=shell_script)
 
     return [bash_script.name, shell_script.name]
 
