@@ -41,6 +41,8 @@ def create_template():
 
     stylesheet_dir = "files/E+L_style.css"
     el_template = "files/el_template_en.html"
+    md_to_toc = "files/md-to-toc.py"
+    md_to_doc_readme = "files/README.md"
     if language == 'lang_de':
         el_template = "files/el_template_de.html"
     markdown_templ = str(create_markdown_file(author, title, date,
@@ -49,7 +51,7 @@ def create_template():
         os.path.basename(markdown_templ), os.path.basename(el_template))
 
     files = [el_template, markdown_templ, stylesheet_dir, script_files[0],
-             script_files[1]]
+             script_files[1], md_to_toc, md_to_doc_readme]
 
     myfile_outputdir = "output/el_markdown_template_files.zip"
     create_zip_template_files(myfile_outputdir, files)
