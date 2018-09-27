@@ -3,6 +3,7 @@
 1. Create startscript to launch the server
 
 **Windows**
+
 Default host address is *http://127.0.0.1:5000/*
 ``` batch
 @echo off
