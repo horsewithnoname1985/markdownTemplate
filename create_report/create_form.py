@@ -29,7 +29,7 @@ def form_page() -> 'html':
     return render_template('form.html')
 
 
-def create_template():
+def create_download_archive():
     language = request.form['language']
     author = request.form['author']
     date = request.form['date']
@@ -71,7 +71,7 @@ def create_template():
 
 @app.route('/create_template', methods=['POST', "GET"])
 def create_plus_download() -> 'zipfile':
-    templatezipfile = create_template()
+    templatezipfile = create_download_archive()
     return send_file(templatezipfile, as_attachment=True)
 
 
