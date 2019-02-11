@@ -36,15 +36,21 @@ def create_template():
     title = request.form['title']
     project = request.form['project']
     filename = request.form['filename']
+    style = request.form['style']
 
     print("Language selection" + str(language))
 
-    stylesheet_dir = "files/E+L_style.css"
+    stylesheet_dir = "files/style_templates/Default.css"
+    if style == "robot_framework":
+        stylesheet_dir = "files/style_templates/RobotFramework.css"
+
     el_template = "files/el_template_en.html"
     md_to_toc = "files/md-to-toc.py"
     md_to_doc_readme = "files/README.md"
+
     if language == 'lang_de':
         el_template = "files/el_template_de.html"
+
     markdown_templ = str(create_markdown_file(author, title, date,
                                               project, language, filename))
     script_files = create_script_files(
@@ -73,7 +79,7 @@ def create_script_files(markdown_file, template_file):
     with open("files/make_html" + ".bat", "w") as bash_script:
         print("@echo off", file=bash_script)
         print("pandoc -f markdown --template=" + template_file
-              + " --css E+L_style.css " + "-t html " + "\"" + markdown_file +
+              + " --css Default.css " + "-t html " + "\"" + markdown_file +
               "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
               ".html" + "\"", file=bash_script)
 
@@ -81,7 +87,7 @@ def create_script_files(markdown_file, template_file):
         print("#!/bin/bash", file=shell_script)
         print("cd \"$(dirname \"$0\")\"", file=shell_script)
         print("pandoc -f markdown --template=" + template_file
-              + " --css E+L_style.css " + "-t html " + "\"" + markdown_file +
+              + " --css Default.css " + "-t html " + "\"" + markdown_file +
               "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
               ".html" + "\"", file=shell_script)
 
