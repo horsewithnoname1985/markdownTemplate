@@ -28,17 +28,20 @@ textarea{
   font-size:        115%;
   color:            blue;
   width:            300px;
+  background-color: white;
 }
 
 input[type=date]{
   font-size:        115%;
   color:            blue;
+  background-color: white;
 }
 
 input[type=text] {
   font-size:        115%;
   color:            blue;
   width:            295px;
+  background-color: white;
 }
 input[type=submit] {
   font-size:        125%;
