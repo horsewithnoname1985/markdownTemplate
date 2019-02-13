@@ -20,6 +20,7 @@ import os
 import io
 
 UPLOAD_FOLDER = "output/"
+STYLESHEET_DIR = "files/style_templates/"
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -41,10 +42,11 @@ def create_download_archive():
 
     print("Language selection" + str(language))
 
-    stylesheet_dir = "files/style_templates/Default.css"
+    style_filename = "Default.css"
     if style == "robot_framework":
-        stylesheet_dir = "files/style_templates/RobotFramework.css"
+        style_filename = "RobotFramework.css"
 
+    stylesheet_dir = STYLESHEET_DIR + style_filename
     el_template = "files/el_template_en.html"
     md_to_toc = "files/md-to-toc.py"
     md_to_doc_readme = "files/README.md"
@@ -55,7 +57,8 @@ def create_download_archive():
     markdown_templ = str(create_markdown_file(author, title, date,
                                               project, language, filename))
     script_files = create_script_files(
-        os.path.basename(markdown_templ), os.path.basename(el_template))
+        os.path.basename(markdown_templ), os.path.basename(el_template),
+        style_filename)
 
     files = [el_template, markdown_templ, stylesheet_dir, script_files[0],
              script_files[1], md_to_toc, md_to_doc_readme]
@@ -76,11 +79,11 @@ def create_plus_download() -> 'zipfile':
     return send_file(templatezipfile, as_attachment=True)
 
 
-def create_script_files(markdown_file, template_file):
+def create_script_files(markdown_file, template_file, style_filename):
     with open("files/make_html" + ".bat", "w") as bash_script:
         print("@echo off", file=bash_script)
         print("pandoc -f markdown --template=" + template_file
-              + " --css Default.css " + "-t html " + "\"" + markdown_file +
+              + " --css " + style_filename + " -t html " + "\"" + markdown_file +
               "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
               ".html" + "\"", file=bash_script)
 
@@ -88,7 +91,7 @@ def create_script_files(markdown_file, template_file):
         print("#!/bin/bash", file=shell_script)
         print("cd \"$(dirname \"$0\")\"", file=shell_script)
         print("pandoc -f markdown --template=" + template_file
-              + " --css Default.css " + "-t html " + "\"" + markdown_file +
+              + " --css " + style_filename + " -t html " + "\"" + markdown_file +
               "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
               ".html" + "\"", file=shell_script)
 

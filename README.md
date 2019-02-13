@@ -1,4 +1,10 @@
-# Create report - Usage
+# Prerequisites
+Converting the markdown document into an HTML file requires 
+[pandoc](https://www.pandoc.org/installing.html) to be installed.
+
+# Installation
+
+
 
 1. Create startscript to launch the server
 
