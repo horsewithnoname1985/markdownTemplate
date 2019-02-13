@@ -14,6 +14,7 @@ https://pandoc.org/)
 
 from flask import Flask, render_template, request, send_file
 from os.path import basename
+from sys import platform
 import zipfile
 import os
 import io
@@ -95,7 +96,14 @@ def create_script_files(markdown_file, template_file):
 
 
 def create_zip_template_files(archive_file, files) -> 'zipfile':
-    myfile = zipfile.ZipFile(archive_file, "w")
+    myfile = None
+
+    if platform == "linux" or platform == "darwin":
+        myfile = zipfile.ZipFile(archive_file, mode="w",
+                                 compression=zipfile.ZIP_BZIP2)
+    elif platform == "win32":
+        myfile = zipfile.ZipFile(archive_file, mode="w")
+
     for file in files:
         myfile.write(file, basename(file))
         print(file)
