@@ -63,7 +63,7 @@ def create_download_archive():
     files = [el_template, markdown_templ, stylesheet_dir, script_files[0],
              script_files[1], md_to_toc, md_to_doc_readme]
 
-    myfile_outputdir = "output/el_markdown_template_files.zip"
+    myfile_outputdir = "output/markdown_template_files.zip"
     create_zip_template_files(myfile_outputdir, files)
     os.remove(markdown_templ)
 
