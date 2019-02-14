@@ -101,9 +101,14 @@ def create_script_files(markdown_file, template_file, style_filename):
 def create_zip_template_files(archive_file, files) -> 'zipfile':
     myfile = None
 
-    if platform == "linux" or platform == "darwin":
+    if platform == "linux":
         myfile = zipfile.ZipFile(archive_file, mode="w",
                                  compression=zipfile.ZIP_BZIP2)
+
+    elif platform == "darwin":
+        myfile = zipfile.ZipFile(archive_file, mode="w",
+                                 compression=zipfile.ZIP_DEFLATED)
+
     elif platform == "win32":
         myfile = zipfile.ZipFile(archive_file, mode="w")
 
