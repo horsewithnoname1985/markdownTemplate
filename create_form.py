@@ -15,15 +15,25 @@ https://pandoc.org/)
 from flask import Flask, render_template, request, send_file
 from os.path import basename
 from sys import platform
+from shutil import copyfile, rmtree
 import zipfile
 import os
 import io
+import logging
 
-UPLOAD_FOLDER = "output/"
-STYLESHEET_DIR = "files/style_templates/"
+OUTPUT_DIR = "output/"
+TEMP_DIR = "temp/"
+FILES_DIR = "files/"
+
+STYLESHEET_DIR = "files/templates/css/"
+HTML_DIR = "files/templates/html/"
+MARKDOWN_DIR = "files/templates/markdown/"
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = OUTPUT_DIR
+
+logging.basicConfig(level=logging.INFO,
+                    format=" %(asctime)s - %(levelname)s - %(message)s")
 
 
 @app.route('/')
@@ -32,6 +42,44 @@ def form_page() -> 'html':
 
 
 def create_download_archive():
+    rmtree(OUTPUT_DIR)
+
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+
+    if not os.path.exists(TEMP_DIR):
+        os.makedirs(TEMP_DIR)
+
+    prepare_files()
+
+    filename = request.form['filename']
+    zip_filename = OUTPUT_DIR + filename + "_template_files.zip"
+
+    output_archive_file = zip_output_files(zip_filename)
+    rmtree(TEMP_DIR)
+
+    return output_archive_file
+
+
+def create_output_dirs():
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+
+    if not os.path.exists(TEMP_DIR):
+        os.makedirs(TEMP_DIR)
+
+
+@app.route('/create_template', methods=['POST', "GET"])
+def get_template_as_download() -> 'zipfile':
+    create_output_dirs()
+
+    templatezipfile = create_download_archive()
+    return send_file(templatezipfile, as_attachment=True)
+
+
+def prepare_files():
+    logging.info("Start preparing files ...")
+
     language = request.form['language']
     author = request.form['author']
     date = request.form['date']
@@ -40,126 +88,130 @@ def create_download_archive():
     filename = request.form['filename']
     style = request.form['style']
 
-    print("Language selection" + str(language))
+    html_template_filename = style + "_template_" + language + ".html"
+    css_filename = style + ".css"
 
-    style_filename = "Default.css"
-    if style == "robot_framework":
-        style_filename = "RobotFramework.css"
+    copyfile(FILES_DIR + "md-to-toc.py", TEMP_DIR + "md-to-toc.py")
+    copyfile(FILES_DIR + "README.md", TEMP_DIR + "README.md")
+    copyfile(STYLESHEET_DIR + css_filename, TEMP_DIR + css_filename)
+    copyfile(HTML_DIR + style + "_template_" + language + ".html",
+             TEMP_DIR + style + "_template_" + language + ".html")
 
-    stylesheet_dir = STYLESHEET_DIR + style_filename
-    el_template = "files/el_template_en.html"
-    md_to_toc = "files/md-to-toc.py"
-    md_to_doc_readme = "files/README.md"
+    markdown_filename = prepare_markdown_file(author, title, date, project,
+                                              language, filename)
+    prepare_script_files(markdown_filename, html_template_filename,
+                         css_filename)
 
-    if language == 'lang_de':
-        el_template = "files/el_template_de.html"
-
-    markdown_templ = str(create_markdown_file(author, title, date,
-                                              project, language, filename))
-    script_files = create_script_files(
-        os.path.basename(markdown_templ), os.path.basename(el_template),
-        style_filename)
-
-    files = [el_template, markdown_templ, stylesheet_dir, script_files[0],
-             script_files[1], md_to_toc, md_to_doc_readme]
-
-    myfile_outputdir = "output/markdown_template_files.zip"
-    create_zip_template_files(myfile_outputdir, files)
-    os.remove(markdown_templ)
-
-    for file in script_files:
-        os.remove(file)
-
-    return myfile_outputdir
+    logging.info("Prepared all files.")
 
 
-@app.route('/create_template', methods=['POST', "GET"])
-def create_plus_download() -> 'zipfile':
-    templatezipfile = create_download_archive()
-    return send_file(templatezipfile, as_attachment=True)
+def prepare_script_files(markdown_file, template_file, style_filename):
+    logging.info("Preparing script files ...")
+
+    try:
+        with open(TEMP_DIR + "make_html" + ".bat", "w") as bash_script:
+            print("@echo off", file=bash_script)
+            print("pandoc -f markdown --template=" + template_file
+                  + " --css " + style_filename + " -t html " + "\"" + markdown_file +
+                  "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
+                  ".html" + "\"", file=bash_script)
+
+        with open(TEMP_DIR + "make_html" + ".sh", "w") as shell_script:
+            print("#!/bin/bash", file=shell_script)
+            print("cd \"$(dirname \"$0\")\"", file=shell_script)
+            print("pandoc -f markdown --template=" + template_file
+                  + " --css " + style_filename + " -t html " + "\"" + markdown_file +
+                  "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
+                  ".html" + "\"", file=shell_script)
+
+    except OSError:
+        logging.error("Cannot create script files.")
+
+    logging.info("Prepared script files.")
 
 
-def create_script_files(markdown_file, template_file, style_filename):
-    with open("files/make_html" + ".bat", "w") as bash_script:
-        print("@echo off", file=bash_script)
-        print("pandoc -f markdown --template=" + template_file
-              + " --css " + style_filename + " -t html " + "\"" + markdown_file +
-              "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
-              ".html" + "\"", file=bash_script)
+def zip_output_files(archive_filepath) -> 'zipfile':
+    files = []
+    archive_file = None
 
-    with open("files/make_html" + ".sh", "w") as shell_script:
-        print("#!/bin/bash", file=shell_script)
-        print("cd \"$(dirname \"$0\")\"", file=shell_script)
-        print("pandoc -f markdown --template=" + template_file
-              + " --css " + style_filename + " -t html " + "\"" + markdown_file +
-              "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
-              ".html" + "\"", file=shell_script)
+    logging.info("Archiving files ...")
 
-    return [bash_script.name, shell_script.name]
+    for filename in os.listdir(TEMP_DIR):
+        files.append(filename)
 
+    try:
+        if platform == "linux":
+            archive_file = zipfile.ZipFile(archive_filepath, mode="w",
+                                           compression=zipfile.ZIP_BZIP2)
 
-def create_zip_template_files(archive_file, files) -> 'zipfile':
-    myfile = None
+        elif platform == "darwin":
+            archive_file = zipfile.ZipFile(archive_filepath, mode="w",
+                                           compression=zipfile.ZIP_DEFLATED)
 
-    if platform == "linux":
-        myfile = zipfile.ZipFile(archive_file, mode="w",
-                                 compression=zipfile.ZIP_BZIP2)
+        elif platform == "win32":
+            archive_file = zipfile.ZipFile(archive_filepath, mode="w")
 
-    elif platform == "darwin":
-        myfile = zipfile.ZipFile(archive_file, mode="w",
-                                 compression=zipfile.ZIP_DEFLATED)
+        for file in files:
+            archive_file.write(TEMP_DIR + file, basename(file))
 
-    elif platform == "win32":
-        myfile = zipfile.ZipFile(archive_file, mode="w")
+        archive_file.close()
 
-    for file in files:
-        myfile.write(file, basename(file))
-        print(file)
-    myfile.close()
+    except RuntimeError:
+        logging.error("Unable to create archive file!")
 
-    return myfile
+    logging.info("Created archive file.")
+
+    return archive_file.filename
 
 
-def create_markdown_file(author, title, date, project, language,
-                         filename) -> 'str':
-    template = io.open("files/" + filename + "_v1.0.markdown", mode="w",
-                       encoding="utf-8")
-    template.write("---" + "\n")
-    template.write("author: " + author + "\n")
-    template.write("project: " + project + "\n")
-    template.write("title: " + title + "\n")
-    template.write("date: " + date + "\n")
-    template.write("version: 1.0" + "\n")
-    template.write("---" + "\n")
+def prepare_markdown_file(author, title, date, project, language, filename):
+    template = None
 
-    introduction_str = "Introduction"
-    considerations_str = "Preliminary considerations"
-    test_setup_str = "Test setup and execution"
-    results_str = "Results"
-    conclusion_str = "Conclusion"
+    logging.info("Preparing markdown template file...")
 
-    if language == 'lang_de':
-        introduction_str = "Einleitung"
-        considerations_str = "Vorüberlegungen"
-        test_setup_str = "Testaufbau und -durchführung"
-        results_str = "Testergebnisse"
-        conclusion_str = "Fazit"
+    try:
+        template = io.open(TEMP_DIR + filename + "_v1.0.markdown", mode="w",
+                           encoding="utf-8")
+        template.write("---" + "\n")
+        template.write("author: " + author + "\n")
+        template.write("project: " + project + "\n")
+        template.write("title: " + title + "\n")
+        template.write("date: " + date + "\n")
+        template.write("version: 1.0" + "\n")
+        template.write("---" + "\n")
 
-    template.write("## " + introduction_str + "\n")
-    template.write("\n")
-    template.write("## " + considerations_str + "\n")
-    template.write("\n")
-    template.write("## " + test_setup_str + "\n")
-    template.write("\n")
-    template.write("## " + results_str + "\n")
-    template.write("\n")
-    template.write("## " + conclusion_str + "\n")
-    template.write("\n")
+        introduction_str = "Introduction"
+        considerations_str = "Preliminary considerations"
+        test_setup_str = "Test setup and execution"
+        results_str = "Results"
+        conclusion_str = "Conclusion"
 
-    template.close()
-    print(type(template.name))
+        if language == 'lang_de':
+            introduction_str = "Einleitung"
+            considerations_str = "Vorüberlegungen"
+            test_setup_str = "Testaufbau und -durchführung"
+            results_str = "Testergebnisse"
+            conclusion_str = "Fazit"
 
-    return template.name
+        template.write("## " + introduction_str + "\n")
+        template.write("\n")
+        template.write("## " + considerations_str + "\n")
+        template.write("\n")
+        template.write("## " + test_setup_str + "\n")
+        template.write("\n")
+        template.write("## " + results_str + "\n")
+        template.write("\n")
+        template.write("## " + conclusion_str + "\n")
+        template.write("\n")
+
+        template.close()
+
+        logging.info("Prepared markdown template file")
+
+    except IOError:
+        logging.error("Unable to prepare markdown template file")
+
+    return basename(template.name)
 
 
 app.run(debug=True)

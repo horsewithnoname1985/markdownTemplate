@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$lang$" xml:lang="$lang$"$if(dir)$ dir="$dir$"$endif$>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" /> $for(author-meta)$
+  <meta name="author" content="$author-meta$" /> $endfor$ $if(date-meta)$
+  <meta name="dcterms.date" content="$date-meta$" /> $endif$ $if(keywords)$
+  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" /> $endif$
+  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
+  <style type="text/css">
+    code {
+      white-space: pre-wrap;
+    }
+
+    span.smallcaps {
+      font-variant: small-caps;
+    }
+
+    span.underline {
+      text-decoration: underline;
+    }
+
+    div.column {
+      display: inline-block;
+      vertical-align: top;
+      width: 50%;
+    }
+
+    $if(quotes)$ q {
+      quotes: "“" "”" "‘" "’";
+    }
+
+    $endif$
+  </style>
+  $if(highlighting-css)$
+  <style type="text/css">
+    $highlighting-css$
+  </style>
+  $endif$ $for(css)$
+  <link rel="stylesheet" href="$css$"> $endfor$ $if(math)$ $math$ $endif$
+  <!--[if lt IE 9]>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+    <![endif]-->
+  $for(header-includes)$ $header-includes$ $endfor$
+</head>
+
+<body>
+  $for(include-before)$ $include-before$ $endfor$ $if(title)$
+  <header>
+    $endif$
+    <table class="headline">
+        <tr>
+            <td id="logoImage"><img src="https://www.creationell.de/fileadmin/creationell/redaktion/Referenzen/Logos_Kunden/Logo__E_L.svg" alt="E+L Logo"></td>
+            <td id="logoText">Corporate Development - Test</td>
+        </tr>
+    </table>
+      <div class="line"></div>
+    <table>
+
+
+    <table>
+      <tr>
+        <td colspan="2">
+          <h1 class="title">$title$</h1>
+        </td>
+      </tr>
+      $if(subtitle)$
+        <tr>
+          <td colspan="2">
+            <h1 class="title">$subtitle$</h1>
+          </td>
+        </tr>
+      $endif$
+    </table>
+
+    <table>
+      $for(author)$
+      <tr>
+        <td class="headertablename">Author</td>
+        <td class="headertablevalue">$author$</td>
+      </tr>
+      $endfor$ $if(date)$
+      <tr>
+        <td class="headertablename">Erstellungsdatum</td>
+        <td class="headertablevalue">$date$</td>
+      </tr>
+      $endif$ $if(project)$
+      <tr>
+        <td class="headertablename">Projekt</td>
+        <td class="headertablevalue">$project$</td>
+      </tr>
+      $endif$ $if(version)$
+      <tr>
+        <td class="headertablename">Version</td>
+        <td class="headertablevalue">$version$</td>
+      </tr>
+      $endif$
+    </table>
+
+  </header>
+
+  $if(toc)$
+  <nav id="$idprefix$TOC">
+    $table-of-contents$
+  </nav>
+  $endif$ $body$ $for(include-after)$ $include-after$ $endfor$
+</body>
+<footer>
+  <div class="line"></div>
+  <p>Copyright &copy; 2018 Erhardt+Leimer GmbH. Alle Rechte vorbehalten.
+  </p>
+</footer>
+
+</html>
