@@ -20,14 +20,17 @@ import zipfile
 import os
 import io
 import logging
+import pathlib
 
 OUTPUT_DIR = "output/"
 TEMP_DIR = "temp/"
+TEMP_IMG_DIR = "temp/img/"
 FILES_DIR = "files/"
 
 STYLESHEET_DIR = "files/templates/css/"
 HTML_DIR = "files/templates/html/"
 MARKDOWN_DIR = "files/templates/markdown/"
+IMG_DIR = "files/templates/img/"
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = OUTPUT_DIR
@@ -39,6 +42,23 @@ logging.basicConfig(level=logging.INFO,
 @app.route('/')
 def form_page() -> 'html':
     return render_template('form.html')
+
+
+@app.route('/create_template', methods=['POST', "GET"])
+def get_template_as_download() -> 'zipfile':
+    create_output_dirs()
+
+    templatezipfile = create_download_archive()
+    return send_file(templatezipfile, as_attachment=True)
+
+
+def create_output_dirs():
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+
+    if not os.path.exists(TEMP_DIR):
+        os.makedirs(TEMP_DIR)
+        os.makedirs(TEMP_IMG_DIR)
 
 
 def create_download_archive():
@@ -61,22 +81,6 @@ def create_download_archive():
     return output_archive_file
 
 
-def create_output_dirs():
-    if not os.path.exists(OUTPUT_DIR):
-        os.makedirs(OUTPUT_DIR)
-
-    if not os.path.exists(TEMP_DIR):
-        os.makedirs(TEMP_DIR)
-
-
-@app.route('/create_template', methods=['POST', "GET"])
-def get_template_as_download() -> 'zipfile':
-    create_output_dirs()
-
-    templatezipfile = create_download_archive()
-    return send_file(templatezipfile, as_attachment=True)
-
-
 def prepare_files():
     logging.info("Start preparing files ...")
 
@@ -96,6 +100,7 @@ def prepare_files():
     copyfile(STYLESHEET_DIR + css_filename, TEMP_DIR + css_filename)
     copyfile(HTML_DIR + style + "_template_" + language + ".html",
              TEMP_DIR + style + "_template_" + language + ".html")
+    copyfile(IMG_DIR + style + ".png", TEMP_IMG_DIR + style + ".png")
 
     markdown_filename = prepare_markdown_file(author, title, date, project,
                                               language, filename)
@@ -131,13 +136,14 @@ def prepare_script_files(markdown_file, template_file, style_filename):
 
 
 def zip_output_files(archive_filepath) -> 'zipfile':
-    files = []
     archive_file = None
 
     logging.info("Archiving files ...")
 
-    for filename in os.listdir(TEMP_DIR):
-        files.append(filename)
+    files = get_prepared_files_as_list()
+
+    # for filename in os.listdir(TEMP_DIR):
+    #     files.append(filename)
 
     try:
         if platform == "linux":
@@ -152,7 +158,11 @@ def zip_output_files(archive_filepath) -> 'zipfile':
             archive_file = zipfile.ZipFile(archive_filepath, mode="w")
 
         for file in files:
-            archive_file.write(TEMP_DIR + file, basename(file))
+            source = pathlib.Path(file)
+            destination = pathlib.Path(*source.parts[1:])
+            archive_file.write(source, destination)
+
+            # archive_file.write(file, basename(file))
 
         archive_file.close()
 
@@ -162,6 +172,18 @@ def zip_output_files(archive_filepath) -> 'zipfile':
     logging.info("Created archive file.")
 
     return archive_file.filename
+
+
+def get_prepared_files_as_list() -> list:
+    all_files = []
+
+    for root, directories, filenames in os.walk(TEMP_DIR):
+        for directory in directories:
+            all_files.append(os.path.join(root, directory))
+        for filename in filenames:
+            all_files.append(os.path.join(root, filename))
+
+    return all_files
 
 
 def prepare_markdown_file(author, title, date, project, language, filename):
