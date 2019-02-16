@@ -12,8 +12,10 @@ Please note, that pandoc must be installed to create the HTML file (see
 https://pandoc.org/)
 """
 
+__version__ = "0.1"
+
 from flask import Flask, render_template, request, send_file
-from os.path import basename
+from os.path import basename, dirname, abspath
 from sys import platform
 from shutil import copyfile, rmtree
 import zipfile
@@ -22,10 +24,11 @@ import io
 import logging
 import pathlib
 
+
 OUTPUT_DIR = "output/"
+FILES_DIR = "files/"
 TEMP_DIR = "temp/"
 TEMP_IMG_DIR = "temp/img/"
-FILES_DIR = "files/"
 
 STYLESHEET_DIR = "files/templates/css/"
 HTML_DIR = "files/templates/html/"
@@ -34,13 +37,18 @@ IMG_DIR = "files/templates/img/"
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = OUTPUT_DIR
+os.chdir(dirname(abspath(__file__)))
 
 logging.basicConfig(level=logging.INFO,
                     format=" %(asctime)s - %(levelname)s - %(message)s")
 
 
+def main():
+    pass
+
+
 @app.route('/')
-def form_page() -> 'html':
+def form_page():
     return render_template('form.html')
 
 
@@ -95,6 +103,8 @@ def prepare_files():
     html_template_filename = style + "_template_" + language + ".html"
     css_filename = style + ".css"
 
+    logging.warning("Current dir: " + os.getcwd())
+
     copyfile(FILES_DIR + "md-to-toc.py", TEMP_DIR + "md-to-toc.py")
     copyfile(FILES_DIR + "README.md", TEMP_DIR + "README.md")
     copyfile(STYLESHEET_DIR + css_filename, TEMP_DIR + css_filename)
@@ -142,9 +152,6 @@ def zip_output_files(archive_filepath) -> 'zipfile':
 
     files = get_prepared_files_as_list()
 
-    # for filename in os.listdir(TEMP_DIR):
-    #     files.append(filename)
-
     try:
         if platform == "linux":
             archive_file = zipfile.ZipFile(archive_filepath, mode="w",
@@ -161,8 +168,6 @@ def zip_output_files(archive_filepath) -> 'zipfile':
             source = pathlib.Path(file)
             destination = pathlib.Path(*source.parts[1:])
             archive_file.write(source, destination)
-
-            # archive_file.write(file, basename(file))
 
         archive_file.close()
 
