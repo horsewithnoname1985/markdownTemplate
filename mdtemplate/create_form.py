@@ -23,6 +23,9 @@ import os
 import io
 import logging
 import pathlib
+import webbrowser
+import random
+import threading
 
 
 OUTPUT_DIR = "output/"
@@ -44,7 +47,10 @@ logging.basicConfig(level=logging.INFO,
 
 
 def main():
-    pass
+    port = 5000 + random.randint(0, 999)
+    url = "http://127.0.0.1:{0}".format(port)
+    threading.Timer(1.25, lambda: webbrowser.open(url)).start()
+    app.run(port=port, debug=False)
 
 
 @app.route('/')
@@ -241,4 +247,4 @@ def prepare_markdown_file(author, title, date, project, language, filename):
     return basename(template.name)
 
 
-app.run(debug=True)
+# app.run(port=port, debug=True)
