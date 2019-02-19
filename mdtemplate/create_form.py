@@ -245,6 +245,3 @@ def prepare_markdown_file(author, title, date, project, language, filename):
         logging.error("Unable to prepare markdown template file")
 
     return basename(template.name)
-
-
-# app.run(port=port, debug=True)
