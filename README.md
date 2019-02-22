@@ -10,10 +10,37 @@ You can download it [here](https://www.wfonts.com/font/ocr-a)
 (add OCR-A.ttf to your system's fonts).
 
 # Installation
+It is recommended to install the package within a 
+[virtual environment](some_link)::
 
+    $ virtualenv -p /usr/bin/python3 ~/.virtualenv/scripts_venv
+    
+Activate the environment via::
+    
+    $ source ~/.virtualenv/scripts/bin/activate
 
+then install via pip::
 
-1. Create startscript to launch the server
+    (script)$ pip install mdemplate
+
+# Usage
+Run the script from within your python virtual environment::
+
+    (script)$ mdtemplate
+    
+The web browser, containing the template form is lauched automatically.    
+
+Alternatively, the script can be executed without activating your
+virtual environment. Copy the executable from your environment's 
+`bin` directory to a your `/usr/bin` directory::
+
+    $ sudo cp ~/.virtualenv/scripts/bin/mdtemplate /usr/bin
+    
+Now you can run the script via::
+    
+    $ mdtemplate
+
+Another method is to create an link
 
 **Windows**
 
