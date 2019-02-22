@@ -11,13 +11,17 @@ You can download it [here](https://www.wfonts.com/font/ocr-a)
 
 # Installation
 It is recommended to install the package within a 
-[virtual environment](some_link)
+[virtual environment](some_link) (here, we name it `myscripts`)
 
-    $ virtualenv -p /usr/bin/python3 ~/.virtualenv/scripts_venv
+    $ virtualenv -p /usr/bin/python3 ~/.virtualenv/myscripts
     
 Activate the environment via
     
-    $ source ~/.virtualenv/scripts/bin/activate
+    $ source ~/.virtualenv/myscripts/bin/activate
+    
+or on Windows:
+
+    C:\Users\<yourusername>\.virtualenvs\myscripts\Scripts\activate
 
 then install via pip::
 
@@ -28,28 +32,18 @@ Run the script from within your python virtual environment
 
     (script)$ mdtemplate
     
-The web browser, containing the template form is lauched automatically.    
+The web browser, containing the template form is launched automatically.    
 
-Alternatively, the script can be executed without activating your
-virtual environment. Copy the executable from your environment's 
-`bin` directory to a your `/usr/bin` directory
+Alternatively, the script can be executed from the shell without 
+activating your virtual environment by placing a reference to the script 
+executable inside a sourced directory folder (e.g. `/usr/bin` or `~/bin`).
 
-    $ sudo cp ~/.virtualenv/scripts/bin/mdtemplate /usr/bin
+    $ sudo ln -s ~/.virtualenv/myscripts/bin/mdtemplate /usr/bin
+    
+or on Windows (cmd.exe must be opened as administrator)
+
+    mklink C:\bin\mdtemplate.exe C:\Users\<yourusername>\.virtualenvs\myscripts\Scripts\mdtemplate.exe
     
 Now you can run the script via
     
     $ mdtemplate
-
-Another method is to create an link
-
-**Windows**
-
-Default host address is *http://127.0.0.1:5000/*
-``` batch
-@echo off
-cd C:\your\path\to\markdownTemplate-master\create_report
-"C:\your\path\to\python\interpreter\Scripts\python" create_form.py %*
-start "" http://127.0.0.1:5000/
-pause
-```
-2. Open browser and go to specified address
