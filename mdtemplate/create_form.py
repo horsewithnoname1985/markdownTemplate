@@ -104,25 +104,27 @@ def prepare_files():
     """Copies proper template or created files into temp dir"""
     logging.info("Start preparing files ...")
 
-    # Get user form input data
-    language = request.form['language']
-    author = request.form['author']
-    date = request.form['date']
-    title = request.form['title']
-    project = request.form['project']
-    filename = request.form['filename']
-    style = request.form['style']
+    user_input = get_user_input()
+
+    language = user_input['language']
+    author = user_input['author']
+    date = user_input['date']
+    title = user_input['title']
+    project = user_input['project']
+    filename = user_input['filename']
+    style = user_input['style']
 
     # Assign template filename (derived from user input)
     html_template_filename = style + "_template_" + language + ".html"
     css_filename = style + ".css"
 
-    # Copy template files to temp dir
+    # Internal function to copy any file to temp dir
     def copy_to_temp(src, temp_dir: str = ""):
         copyfile(src, TEMP_DIR.joinpath(temp_dir + src.name))
         logging.warning('copied to ' +
                         str(TEMP_DIR.joinpath(temp_dir + src.name)))
 
+    # Copy template files to temp dir
     copy_to_temp(ADDONS_DIR.joinpath("md-to-toc.py"))
     copy_to_temp(ADDONS_DIR.joinpath("README.md"))
     copy_to_temp(STYLESHEET_DIR.joinpath(css_filename))
@@ -223,6 +225,19 @@ def get_prepared_files_as_list() -> list:
             all_files.append(os.path.join(root, filename))
 
     return all_files
+
+
+def get_user_input() -> dict:
+    user_input = dict()
+    user_input['language'] = request.form['language']
+    user_input['author'] = request.form['author']
+    user_input['date'] = request.form['date']
+    user_input['title'] = request.form['title']
+    user_input['project'] = request.form['project']
+    user_input['filename'] = request.form['filename']
+    user_input['style'] = request.form['style']
+
+    return user_input
 
 
 def prepare_markdown_file(author, title, date, project, language, filename):

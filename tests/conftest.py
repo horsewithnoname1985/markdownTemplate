@@ -7,4 +7,3 @@ from shutil import rmtree
 def remove_temporary_dirs():
     yield
     rmtree(create_form.TEMP_DIR)
-    rmtree(create_form.OUTPUT_DIR)
