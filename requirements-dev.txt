@@ -1,0 +1,5 @@
+# Requirements needed for development
+
+pytest >= 4.3.0
+
+-r requirements.txt

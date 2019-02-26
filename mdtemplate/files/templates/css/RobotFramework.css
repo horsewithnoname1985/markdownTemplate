@@ -8,10 +8,11 @@ html {
 body {
   color: #444;
   font-family: Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
-  font-size: 12px;
-  line-height: 1.7;
+  font-size: 16px;
+  line-height: 1.2rem;
   padding: 1em;
   margin: auto;
+  margin-bottom: 1rem;
   max-width: 42em;
   background: #fefefe;
 }

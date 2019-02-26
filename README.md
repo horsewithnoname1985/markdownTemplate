@@ -47,3 +47,12 @@ or on Windows (cmd.exe must be opened as administrator)
 Now you can run the script via
     
     $ mdtemplate
+
+# Note
+Since the markdown template consists of several files, an archive file
+(*.zip) is provided as download. The app uses a particular compression
+depending on the operating system you are launching the application from.
+These compression modes are tested to be extractable on that particular OS
+using the system's built-in archiving software. Unfortunately, when moving 
+the downloaded archive to another system, you might not be able to extract it
+without installing an additional archiver (i.e. [7-Zip](https://www.7-zip.org/)) 

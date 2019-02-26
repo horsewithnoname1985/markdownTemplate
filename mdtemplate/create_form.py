@@ -18,6 +18,7 @@ from flask import Flask, render_template, request, send_file
 from os.path import basename, dirname, abspath
 from sys import platform
 from shutil import copyfile, rmtree
+from pathlib import Path
 import zipfile
 import os
 import io
@@ -27,26 +28,41 @@ import webbrowser
 import random
 import threading
 
+# PATHS
+# -----
+# base dir (relative)
+BASE_DIR = Path("./")
 
-OUTPUT_DIR = "output/"
-FILES_DIR = "files/"
-TEMP_DIR = "temp/"
-TEMP_IMG_DIR = "temp/img/"
+# temporary output dir
+TEMP_DIR = BASE_DIR.joinpath("temp")
+TEMP_IMG_DIR = BASE_DIR.joinpath("temp/img")
 
-STYLESHEET_DIR = "files/templates/css/"
-HTML_DIR = "files/templates/html/"
-MARKDOWN_DIR = "files/templates/markdown/"
-IMG_DIR = "files/templates/img/"
+# base dir of the templates
+TEMPLATES_DIR = BASE_DIR.joinpath("files/templates")
+
+# base dir of add-on files
+ADDONS_DIR = BASE_DIR.joinpath("files/addons")
+
+# template sub-directories
+STYLESHEET_DIR = TEMPLATES_DIR.joinpath("css")
+HTML_DIR = TEMPLATES_DIR.joinpath("html")
+MARKDOWN_DIR = TEMPLATES_DIR.joinpath("markdown")
+IMG_DIR = TEMPLATES_DIR.joinpath("img")
+
+# SETUP
+# -----
+# Set this files directory as working dir
+os.chdir(dirname(abspath(__file__)))
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = OUTPUT_DIR
-os.chdir(dirname(abspath(__file__)))
+app.config['UPLOAD_FOLDER'] = TEMP_DIR
 
 logging.basicConfig(level=logging.INFO,
                     format=" %(asctime)s - %(levelname)s - %(message)s")
 
 
 def main():
+    """Launches app on localhost"""
     port = 5000 + random.randint(0, 999)
     url = "http://127.0.0.1:{0}".format(port)
     threading.Timer(1.25, lambda: webbrowser.open(url)).start()
@@ -60,44 +76,35 @@ def form_page():
 
 @app.route('/create_template', methods=['POST', "GET"])
 def get_template_as_download() -> 'zipfile':
-    create_output_dirs()
-
+    """Define 'Create template' button click action"""
+    reset_temp_dir()
     templatezipfile = create_download_archive()
     return send_file(templatezipfile, as_attachment=True)
 
 
-def create_output_dirs():
-    if not os.path.exists(OUTPUT_DIR):
-        os.makedirs(OUTPUT_DIR)
+def reset_temp_dir():
+    """Creates output directory structure for temporary files"""
+    if os.path.exists(TEMP_DIR):
+        rmtree(TEMP_DIR)
 
-    if not os.path.exists(TEMP_DIR):
-        os.makedirs(TEMP_DIR)
-        os.makedirs(TEMP_IMG_DIR)
+    os.makedirs(TEMP_DIR)
+    os.makedirs(TEMP_IMG_DIR)
 
 
 def create_download_archive():
-    rmtree(OUTPUT_DIR)
-
-    if not os.path.exists(OUTPUT_DIR):
-        os.makedirs(OUTPUT_DIR)
-
-    if not os.path.exists(TEMP_DIR):
-        os.makedirs(TEMP_DIR)
+    """Triggers creation of template archive"""
 
     prepare_files()
-
-    filename = request.form['filename']
-    zip_filename = OUTPUT_DIR + filename + "_template_files.zip"
-
-    output_archive_file = zip_output_files(zip_filename)
-    rmtree(TEMP_DIR)
+    output_archive_file = zip_output_files()
 
     return output_archive_file
 
 
 def prepare_files():
+    """Copies proper template or created files into temp dir"""
     logging.info("Start preparing files ...")
 
+    # Get user form input data
     language = request.form['language']
     author = request.form['author']
     date = request.form['date']
@@ -106,18 +113,23 @@ def prepare_files():
     filename = request.form['filename']
     style = request.form['style']
 
+    # Assign template filename (derived from user input)
     html_template_filename = style + "_template_" + language + ".html"
     css_filename = style + ".css"
 
-    logging.warning("Current dir: " + os.getcwd())
+    # Copy template files to temp dir
+    def copy_to_temp(src, temp_dir: str = ""):
+        copyfile(src, TEMP_DIR.joinpath(temp_dir + src.name))
+        logging.warning('copied to ' +
+                        str(TEMP_DIR.joinpath(temp_dir + src.name)))
 
-    copyfile(FILES_DIR + "md-to-toc.py", TEMP_DIR + "md-to-toc.py")
-    copyfile(FILES_DIR + "README.md", TEMP_DIR + "README.md")
-    copyfile(STYLESHEET_DIR + css_filename, TEMP_DIR + css_filename)
-    copyfile(HTML_DIR + style + "_template_" + language + ".html",
-             TEMP_DIR + style + "_template_" + language + ".html")
-    copyfile(IMG_DIR + style + ".png", TEMP_IMG_DIR + style + ".png")
+    copy_to_temp(ADDONS_DIR.joinpath("md-to-toc.py"))
+    copy_to_temp(ADDONS_DIR.joinpath("README.md"))
+    copy_to_temp(STYLESHEET_DIR.joinpath(css_filename))
+    copy_to_temp(HTML_DIR.joinpath(html_template_filename))
+    copy_to_temp(IMG_DIR.joinpath(style + ".png"), 'img/')
 
+    # Create additional files inside temp dir
     markdown_filename = prepare_markdown_file(author, title, date, project,
                                               language, filename)
     prepare_script_files(markdown_filename, html_template_filename,
@@ -126,24 +138,33 @@ def prepare_files():
     logging.info("Prepared all files.")
 
 
-def prepare_script_files(markdown_file, template_file, style_filename):
+def prepare_script_files(markdown_file: str, template_file: str,
+                         style_filename: str) -> None:
+    """Creates html creation script files inside temp directory"""
     logging.info("Preparing script files ...")
 
+    # Paths definition
+    batch_script_path = Path(TEMP_DIR.joinpath("make_html.bat"))
+    shell_script_path = Path(TEMP_DIR.joinpath("make_html.sh"))
+
+    # Creating and writing into files
     try:
-        with open(TEMP_DIR + "make_html" + ".bat", "w") as bash_script:
+        with batch_script_path.open(mode="w") as bash_script:
             print("@echo off", file=bash_script)
             print("pandoc -f markdown --template=" + template_file
-                  + " --css " + style_filename + " -t html " + "\"" + markdown_file +
-                  "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
-                  ".html" + "\"", file=bash_script)
+                  + " --css " + style_filename + " -t html " + "\""
+                  + markdown_file + "\"" + " -o " + "\""
+                  + markdown_file.rstrip(".markdown") + ".html"
+                  + "\"", file=bash_script)
 
-        with open(TEMP_DIR + "make_html" + ".sh", "w") as shell_script:
+        with shell_script_path.open(mode="w") as shell_script:
             print("#!/bin/bash", file=shell_script)
             print("cd \"$(dirname \"$0\")\"", file=shell_script)
             print("pandoc -f markdown --template=" + template_file
-                  + " --css " + style_filename + " -t html " + "\"" + markdown_file +
-                  "\"" + " -o " + "\"" + markdown_file.rstrip(".markdown") +
-                  ".html" + "\"", file=shell_script)
+                  + " --css " + style_filename + " -t html " + "\""
+                  + markdown_file + "\"" + " -o " + "\""
+                  + markdown_file.rstrip(".markdown")
+                  + ".html" + "\"", file=shell_script)
 
     except OSError:
         logging.error("Cannot create script files.")
@@ -151,13 +172,19 @@ def prepare_script_files(markdown_file, template_file, style_filename):
     logging.info("Prepared script files.")
 
 
-def zip_output_files(archive_filepath) -> 'zipfile':
+def zip_output_files() -> zipfile.ZipFile:
+    """Creates archive files of temp directory content"""
     archive_file = None
+
+    # Define archive filename based on user input
+    filename = request.form['filename']
+    archive_filepath = TEMP_DIR.joinpath(filename + "_template_files.zip")
 
     logging.info("Archiving files ...")
 
     files = get_prepared_files_as_list()
 
+    # Create archive file depending on user system
     try:
         if platform == "linux":
             archive_file = zipfile.ZipFile(archive_filepath, mode="w",
@@ -186,6 +213,7 @@ def zip_output_files(archive_filepath) -> 'zipfile':
 
 
 def get_prepared_files_as_list() -> list:
+    """Returns temp dir content as a list of filepaths"""
     all_files = []
 
     for root, directories, filenames in os.walk(TEMP_DIR):
@@ -198,12 +226,15 @@ def get_prepared_files_as_list() -> list:
 
 
 def prepare_markdown_file(author, title, date, project, language, filename):
+    """Creates markdown template file based on user input inside temp dir"""
     template = None
 
     logging.info("Preparing markdown template file...")
 
+    # Creating and writing into markdown template file
     try:
-        template = io.open(TEMP_DIR + filename + "_v1.0.markdown", mode="w",
+        template = io.open(TEMP_DIR.joinpath(filename + "_v1.0.markdown"),
+                           mode="w",
                            encoding="utf-8")
         template.write("---" + "\n")
         template.write("author: " + author + "\n")
