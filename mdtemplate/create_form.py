@@ -28,6 +28,11 @@ import webbrowser
 import random
 import threading
 
+# HOSTING
+# -------
+URL = "http://127.0.0.1"
+PORT = None
+
 # PATHS
 # -----
 # base dir (relative)
@@ -63,10 +68,11 @@ logging.basicConfig(level=logging.INFO,
 
 def main():
     """Launches app on localhost"""
-    port = 5000 + random.randint(0, 999)
-    url = "http://127.0.0.1:{0}".format(port)
+    global PORT
+    PORT = 5000 + random.randint(0, 999)
+    url = URL + ":{0}".format(PORT)
     threading.Timer(1.25, lambda: webbrowser.open(url)).start()
-    app.run(port=port, debug=False)
+    app.run(port=PORT, debug=False)
 
 
 @app.route('/')
@@ -81,6 +87,11 @@ def get_template_as_download() -> 'zipfile':
     templatezipfile = create_download_archive()
     return send_file(templatezipfile, as_attachment=True)
 
+
+def get_url(result, index):
+    """Returns the URL the app is currently running on"""
+    result[index] = request.host
+    # return request.host
 
 def reset_temp_dir():
     """Creates output directory structure for temporary files"""

@@ -1,6 +1,10 @@
 *** Settings ***
-Documentation    mdtemplate test suite
-Library         SeleniumLibrary
+Documentation       mdtemplate test suite
+Library             SeleniumLibrary
+Library             ../Libraries/app_runner.py
+
+Metadata            Version     1.0
+Metadata            Author      Arne Wohletz
 
 *** Test Cases ***
 Browser displays form automatically
@@ -12,10 +16,13 @@ Browser displays form automatically
 
 *** Keywords ***
 the browser is closed
-    Setup system under test
+    close all browsers
 
 the application is launched
+    ${app_url} =  launch application
 
-the browser is launched
-    Se
+the application url is opened
+    go to user form  ${app_url}
+
 the user form is displayed
+    page should contain  Welcome to the markdown template creation!
