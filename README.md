@@ -25,7 +25,7 @@ or on Windows:
 
 then install via pip::
 
-    (script)$ pip install mdemplate
+    (script)$ pip install mdtemplate
 
 # Usage
 Run the script from within your python virtual environment

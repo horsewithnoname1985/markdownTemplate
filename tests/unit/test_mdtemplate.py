@@ -6,6 +6,13 @@ import configparser
 import shutil
 
 
+def get_mocked_user_input():
+    config: ConfigParser = configparser.ConfigParser()
+    config.read('../tests/unit/form_data.ini')
+    user_input = config['form_data']
+    return user_input
+
+
 def test_reset_output_dirs(remove_temporary_dir_after_test):
     """
     GIVEN the temp dir is not available
@@ -20,13 +27,7 @@ def test_reset_output_dirs(remove_temporary_dir_after_test):
     assert temp_dir_name in dir_content
 
 
-def get_mocked_user_input():
-    config: ConfigParser = configparser.ConfigParser()
-    config.read('../tests/unit/form_data.ini')
-    user_input = config['form_data']
-    return user_input
-
-
+# TODO: This test is too wide -> reduce to prepare markdown / script
 def test_prepare_files(monkeypatch):
     monkeypatch.setattr(create_form, "get_user_input",
                         get_mocked_user_input)
@@ -52,7 +53,3 @@ def test_copy_to_temp(tmpdir,
     create_form.copy_to_temp(src=a_file)
 
     assert os.path.exists(create_form.TEMP_DIR.joinpath('test.txt'))
-
-
-def test_archive_file(monkeypatch):
-    pass
