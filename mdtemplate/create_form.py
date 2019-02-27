@@ -91,6 +91,13 @@ def reset_temp_dir():
     os.makedirs(TEMP_IMG_DIR)
 
 
+def copy_to_temp(src, temp_dir: str = ""):
+    """Copy any file to temp directory"""
+    copyfile(src, TEMP_DIR.joinpath(temp_dir + src.name))
+    logging.warning('copied to ' +
+                    str(TEMP_DIR.joinpath(temp_dir + src.name)))
+
+
 def create_download_archive():
     """Triggers creation of template archive"""
 
@@ -119,10 +126,10 @@ def prepare_files():
     css_filename = style + ".css"
 
     # Internal function to copy any file to temp dir
-    def copy_to_temp(src, temp_dir: str = ""):
-        copyfile(src, TEMP_DIR.joinpath(temp_dir + src.name))
-        logging.warning('copied to ' +
-                        str(TEMP_DIR.joinpath(temp_dir + src.name)))
+    # def copy_to_temp(src, temp_dir: str = ""):
+    #     copyfile(src, TEMP_DIR.joinpath(temp_dir + src.name))
+    #     logging.warning('copied to ' +
+    #                     str(TEMP_DIR.joinpath(temp_dir + src.name)))
 
     # Copy template files to temp dir
     copy_to_temp(ADDONS_DIR.joinpath("md-to-toc.py"))
