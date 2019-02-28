@@ -31,7 +31,7 @@ import threading
 # HOSTING
 # -------
 URL = "http://127.0.0.1"
-PORT = None
+PORT = 0
 
 # PATHS
 # -----
