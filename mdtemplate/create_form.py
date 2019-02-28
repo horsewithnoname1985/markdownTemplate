@@ -66,13 +66,14 @@ logging.basicConfig(level=logging.INFO,
                     format=" %(asctime)s - %(levelname)s - %(message)s")
 
 
-#TODO: Add option, that prevents auto-start of url
-def main():
+def main(autostart=False):
     """Launches app on localhost"""
     global PORT
     PORT = 5000 + random.randint(0, 999)
     url = URL + ":{0}".format(PORT)
-    threading.Timer(1.25, lambda: webbrowser.open(url)).start()
+
+    if autostart:
+        threading.Timer(1.25, lambda: webbrowser.open(url)).start()
     app.run(port=PORT, debug=False)
 
 

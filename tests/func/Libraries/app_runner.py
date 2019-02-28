@@ -7,7 +7,7 @@ import time
 
 class Application:
 
-    app_thread = Thread(target=create_form.main)
+    app_thread = Thread(target=create_form.main, args=(False,))
     url = ""
 
     def __init__(self):
