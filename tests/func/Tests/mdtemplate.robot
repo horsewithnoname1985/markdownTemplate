@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation       mdtemplate test suite
-Library             SeleniumLibrary
-Library             ../Libraries/app_runner.py
+Resource            ../Resources/_Steps/STPS_mdtemplate.robot
+Resource            ../Resources/_SetupTeardown/STPTD_mdtemplate.robot
 
 Metadata            Version     1.0
 Metadata            Author      Arne Wohletz
@@ -11,24 +11,27 @@ ${APP_URL}  empty
 
 
 *** Test Cases ***
-Browser displays form automatically
-    [Tags]    app_launch
+Application is launched successfully
+    [Tags]      app_launch
+    [Teardown]  Close browser and app
     Given the browser is closed
     When the application is launched
     And the application url is opened
     Then the user form is displayed
 
-*** Keywords ***
-the browser is closed
-    close all browsers
+All required fields must contain data to create download archive
+    [Tags]    restriction
+    [Setup]   Start app and open url
+    Given the application is launched
+    And the application url is opened
+    When the create download button is clicked
+    Then the download file is not created
 
-the application is launched
-    ${APP_URL}=  launch application
-
-the application url is opened
-    ${APP_URL}=  127.0.0.1:5000
-    open browser  url=${APP_URL}  browser=firefox
-#    go to  ${APP_URL}
-
-the user form is displayed
-    page should contain  Welcome to the markdown template creation!
+Download file is created when all fields contain data
+    [Tags]    restriction
+    [Setup]   Start app and open url
+    Given the user form is displayed
+    When all fields receive proper data
+    And the create download button is clicked
+    Then the download file is created
+    And the download file is offered for download

@@ -5,9 +5,9 @@
 {% block body %}
 <div class="mainframe">
 <h2>Welcome to the markdown template creation!</h2>
-<p>1) Please enter your template data</p>
-<form method="POST" action="/create_template">
 
+<form method="POST" action="/create_template">
+<p>1) Please enter your template data</p>
     <table>
         <tr>
             <td>
@@ -68,8 +68,8 @@
             </td>
         </tr>
         <!--#TODO:Add pandoc mermaid + pandoc plantuml filter checkbox options-->
-
     </table>
+
     <p>2) Choose a template</p>
     <table>
         <tr>
@@ -92,6 +92,7 @@
             </td>
         </tr>
     </table>
+
     <p>3) Click 'Create template' to get your template files</p>
     <input class="submit" name="submit" type="submit" value="Create template">
 

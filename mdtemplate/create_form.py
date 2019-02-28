@@ -66,6 +66,7 @@ logging.basicConfig(level=logging.INFO,
                     format=" %(asctime)s - %(levelname)s - %(message)s")
 
 
+#TODO: Add option, that prevents auto-start of url
 def main():
     """Launches app on localhost"""
     global PORT
@@ -80,7 +81,7 @@ def form_page():
     return render_template('form.html')
 
 
-@app.route('/create_template', methods=['POST', "GET"])
+@app.route('/create_template', methods=["POST", "GET"])
 def get_template_as_download() -> 'zipfile':
     """Define 'Create template' button click action"""
     reset_temp_dir()
@@ -88,10 +89,20 @@ def get_template_as_download() -> 'zipfile':
     return send_file(templatezipfile, as_attachment=True)
 
 
-def get_url(result, index):
-    """Returns the URL the app is currently running on"""
-    result[index] = request.host
-    # return request.host
+@app.route('/shutdown')
+def shutdown():
+    """Initiates server shutdown"""
+    shutdown_server()
+    return 'Server shutting down...'
+
+
+def shutdown_server():
+    """Shutting down the flask server - Used for tests teardown only"""
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
 
 def reset_temp_dir():
     """Creates output directory structure for temporary files"""
