@@ -1,0 +1,8 @@
+update: insecure
+schedule: "every week"
+search: True
+requirements:
+  - requirements-dev.txt
+  - requirements-build.txt
+  - requirements.txt
+label_prs: update

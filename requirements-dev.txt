@@ -1,6 +1,7 @@
 # Requirements needed for development
 
 pytest >= 4.3.0
+pytest-cov >= 2.6.1
 robotframework >= 3.1.1
 robotframework-seleniumlibrary >= 3.3.1
 
