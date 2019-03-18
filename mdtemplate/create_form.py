@@ -36,7 +36,9 @@ PORT = 0
 # PATHS
 # -----
 # base dir (relative)
-BASE_DIR = Path("./")
+# BASE_DIR = Path("./")
+# base dir (absolute)
+BASE_DIR = Path(dirname(os.path.abspath(__file__)))
 
 # temporary output dir
 TEMP_DIR = BASE_DIR.joinpath("temp")

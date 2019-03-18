@@ -19,7 +19,7 @@ def test_reset_output_dirs(remove_temporary_dir_after_test):
     WHEN the temp dir is reset
     THEN the temp dir is available
     """
-    shutil.rmtree(create_form.TEMP_DIR)
+    # shutil.rmtree(create_form.TEMP_DIR)
     create_form.reset_temp_dir()
     dir_content = os.listdir(create_form.os.getcwd())
     temp_dir_name = create_form.TEMP_DIR.name
