@@ -4,6 +4,9 @@ Library             SeleniumLibrary
 Library             app_runner.Application
 
 
+*** Variables ***
+${XPATH_CREATE_TEMPLATE_BUTTON}    xpath://html/body/div[1]/form/input
+
 *** Keywords ***
 the browser is closed
     close all browsers
@@ -17,3 +20,10 @@ the application url is opened
 
 the user form is displayed
     page should contain  Welcome to the markdown template creation!
+
+the create download button is clicked
+    click button    ${XPATH_CREATE_TEMPLATE_BUTTON}
+
+the download file is not created
+    # TODO: Add keyword implementation
+    # Download dialog window must not appear

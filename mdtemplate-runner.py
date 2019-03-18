@@ -6,4 +6,4 @@
 from mdtemplate.create_form import main
 
 if __name__ == "__main__":
-    main()
+    main(autostart=True)

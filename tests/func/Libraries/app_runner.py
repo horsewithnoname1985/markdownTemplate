@@ -7,8 +7,8 @@ import time
 
 class Application:
 
-    app_thread = Thread(target=create_form.main, args=(False,))
     url = ""
+    app_thread = None
 
     def __init__(self):
         self.selenium_helper = SeleniumHelper()
@@ -21,6 +21,7 @@ class Application:
     @keyword
     def launch_application(self):
         """Hosts app on server"""
+        self.app_thread = Thread(target=create_form.main, args=(False,))
         self.app_thread.start()
         time.sleep(2)
         self.url = self.get_url()

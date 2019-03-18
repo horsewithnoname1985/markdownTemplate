@@ -24,6 +24,8 @@ def execute_tests(interpreter, browser, rf_options):
     runner = interpreter.split() + ['-m', 'robot.run']
     # add all robot options to options list while replacing browser string
     options.extend([opt.format(browser=browser) for opt in ROBOT_OPTIONS])
+    # add all additional command line options
+    options.extend(rf_options)
     # create command by taking basic runner command and adding option list
     command = runner
     command += options + [ACCEPTANCE_TEST_DIR]
