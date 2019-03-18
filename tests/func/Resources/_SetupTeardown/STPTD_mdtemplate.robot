@@ -1,8 +1,12 @@
 *** Settings ***
 Documentation   Suite description
-Resource        ../_Steps/STPS_mdtemplate.robot
-Library         ../../Libraries/app_runner.py
+Resource        ${EXECDIR}/func/Resources/_Steps/STPS_application.robot
+Library         ${EXECDIR}/func/Libraries/app_runner.py
 Library         SeleniumLibrary
+
+
+*** Variables ***
+${XPATH_CREATE_TEMPLATE_BUTTON}    xpath://html/body/div[1]/form/input
 
 
 *** Keywords ***

@@ -1,7 +1,9 @@
 *** Settings ***
 Documentation       mdtemplate test suite
-Resource            ../Resources/_Steps/STPS_mdtemplate.robot
-Resource            ../Resources/_SetupTeardown/STPTD_mdtemplate.robot
+Resource            ${EXECDIR}/func/Resources/_Steps/STPS_application.robot
+Resource            ${EXECDIR}/func/Resources/_Steps/STPS_browser.robot
+Resource            ${EXECDIR}/func/Resources/_Steps/STPS_form.robot
+Resource            ${EXECDIR}/func/Resources/_SetupTeardown/STPTD_mdtemplate.robot
 
 Metadata            Version     1.0
 Metadata            Author      Arne Wohletz
@@ -27,11 +29,11 @@ All required fields must contain data to create download archive
     When the create download button is clicked
     Then the download file is not created
 
-#Download file is created when all fields contain data
-#    [Tags]    restriction
-#    [Setup]   Start app and open url
-#    Given the user form is displayed
-#    When all fields receive proper data
-#    And the create download button is clicked
-#    Then the download file is created
-#    And the download file is offered for download
+Download file is created when all fields contain data
+    [Tags]    restriction    draft
+    [Setup]   Start app and open url
+    Given the user form is displayed
+    When all fields receive proper data
+    And the create download button is clicked
+    Then the download file is created
+    And the download file is offered for download

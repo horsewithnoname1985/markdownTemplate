@@ -14,7 +14,7 @@ https://pandoc.org/)
 
 __version__ = "0.1"
 
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, jsonify
 from os.path import basename, dirname, abspath
 from sys import platform
 from shutil import copyfile, rmtree
@@ -105,6 +105,10 @@ def shutdown_server():
     if func is None:
         raise RuntimeError('Not running with the Werkzeug Server')
     func()
+
+
+def check_mandatory_fields():
+    pass
 
 
 def reset_temp_dir():

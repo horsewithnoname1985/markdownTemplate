@@ -3,6 +3,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
+<script src="/static/form.js"></script>
 <div class="mainframe">
 <h2>Welcome to the markdown template creation!</h2>
 
@@ -14,7 +15,7 @@
                 Title:
             </td>
             <td>
-                <textarea name="title" cols="30" rows="3" required></textarea>
+                <textarea name="title" cols="30" rows="3" class="required" required></textarea>
             </td>
         </tr>
         <tr>
@@ -22,7 +23,7 @@
                 Author:
             </td>
             <td>
-                <input name="author" type="text" width="30" required>
+                <input name="author" type="text" width="30" class=required" required>
             </td>
         </tr>
         <tr>
@@ -30,7 +31,7 @@
                 Date:
             </td>
             <td>
-                <input name="date" type="date" required>
+                <input name="date" type="date" class=required" required>
             </td>
         </tr>
         <tr>
@@ -64,7 +65,7 @@
                 Filename:
             </td>
             <td>
-                <input name="filename" type="text" required>
+                <input name="filename" type="text" class="required" required>
             </td>
         </tr>
         <!--#TODO:Add pandoc mermaid + pandoc plantuml filter checkbox options-->
@@ -94,7 +95,7 @@
     </table>
 
     <p>3) Click 'Create template' to get your template files</p>
-    <input class="submit" name="submit" type="submit" value="Create template">
+    <input id="submit" name="submit" type="submit" value="Create template">
 
 </form>
 </div>
