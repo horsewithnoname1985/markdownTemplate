@@ -30,7 +30,13 @@ def test_reset_output_dirs(remove_temporary_dir_after_test):
 
 
 # TODO: This test is too wide -> reduce to prepare markdown / script
-def test_template_archiver(mocker):
+def test_template_archiver(mocker) -> None:
+    """
+    GIVEN user has input data
+    WHEN an archive file is created by this user data
+    THEN the proper html template file is copied into the temp output dir
+    """
+
     with mocker.patch(
             "mdtemplate.create_form.UserInputData") as MockedUserData:
         data = get_mocked_user_input()
@@ -51,7 +57,13 @@ def test_template_archiver(mocker):
 
 def test_copy_to_temp(tmpdir,
                          reset_temp_dir,
-                         remove_temporary_dir_after_test):
+                         remove_temporary_dir_after_test) -> None:
+    """
+    GIVEN a file is created in any directory
+    WHEN the file is passed into the
+        PredefinedTemplateFile.copy_to_temp() method
+    THEN this file is copied into the temp output directory
+    """
     testfile_name = 'test.txt'
     testfile = tmpdir.join(testfile_name)
     testfile.write('Unimportant content')
