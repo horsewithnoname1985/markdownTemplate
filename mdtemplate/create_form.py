@@ -30,6 +30,7 @@ import threading
 from abc import ABC
 from configparser import ConfigParser
 
+
 # HOSTING
 # -------
 URL = "http://127.0.0.1"
@@ -39,6 +40,8 @@ PORT = 0
 # -----
 # base dir (relative)
 BASE_DIR = Path("./")
+
+# BASE_DIR = Path(dirname(os.path.abspath(__file__)))
 
 # temporary output dir
 TEMP_DIR = BASE_DIR.joinpath("temp")
@@ -69,8 +72,8 @@ logging.basicConfig(
 )
 
 config_parser = ConfigParser()
-config_parser.read("form_field_names.ini")
-
+form_field_names_ini_path = BASE_DIR.joinpath("form_field_names.ini")
+config_parser.read(form_field_names_ini_path)
 form_field_names = dict(config_parser.items(config_parser.sections()[0]))
 
 
@@ -122,8 +125,6 @@ def shutdown_server():
 
 class UserInputData:
     """Contains user input data"""
-
-    data = {}
 
     def __init__(self):
         self.language = request.form[form_field_names["language"]]

@@ -3,14 +3,17 @@ from mdtemplate import create_form
 from pathlib import Path
 import os
 import configparser
-import shutil
+from os.path import dirname
+
+
+BASE_DIR = Path(dirname(os.path.abspath(__file__)))
 
 
 def get_mocked_user_input():
     config: ConfigParser = configparser.ConfigParser()
-    config.read('../tests/unit/form_data.ini')
-    user_input = config['form_data']
-    return user_input
+    config.read(BASE_DIR.joinpath('form_data.ini'))
+    user_input = config.items(config.sections()[0])
+    return dict(user_input)
 
 
 def test_reset_output_dirs(remove_temporary_dir_after_test):
@@ -19,7 +22,7 @@ def test_reset_output_dirs(remove_temporary_dir_after_test):
     WHEN the temp dir is reset
     THEN the temp dir is available
     """
-    create_form.reset_temp_dir()
+    create_form.TemplateArchiver._reset_temp_dir()
     dir_content = os.listdir(create_form.os.getcwd())
     temp_dir_name = create_form.TEMP_DIR.name
 
@@ -27,28 +30,35 @@ def test_reset_output_dirs(remove_temporary_dir_after_test):
 
 
 # TODO: This test is too wide -> reduce to prepare markdown / script
-def test_prepare_files(monkeypatch):
-    monkeypatch.setattr(create_form, "get_user_input",
-                        get_mocked_user_input)
+def test_template_archiver(mocker):
+    with mocker.patch(
+            "mdtemplate.create_form.UserInputData") as MockedUserData:
+        data = get_mocked_user_input()
+        MockedUserData.language = data["language"]
+        MockedUserData.author = data["author"]
+        MockedUserData.date = data["date"]
+        MockedUserData.project = data["project"]
+        MockedUserData.style = data["style"]
+        MockedUserData.title = data["title"]
+        MockedUserData.filename = data["filename"]
 
-    create_form.reset_temp_dir()
-    create_form.prepare_files()
-
-    user_input = get_mocked_user_input()
-    html_template_file_name = user_input['style'] + "_template_" + user_input[
-        'language'] + ".html"
-
-    assert os.path.exists(
-        create_form.TEMP_DIR.joinpath(html_template_file_name))
+        create_form.TemplateArchiver(MockedUserData)
+        html_template_file_name = MockedUserData.style + "_template_" + \
+                                  MockedUserData.language + ".html"
+        assert os.path.exists(
+            create_form.TEMP_DIR.joinpath(html_template_file_name))
 
 
 def test_copy_to_temp(tmpdir,
-                      reset_temp_dir,
-                      remove_temporary_dir_after_test):
-    a_file = tmpdir.join('test.txt')
-    a_file.write('Unimportant content')
-    a_file = Path(a_file)
+                         reset_temp_dir,
+                         remove_temporary_dir_after_test):
+    testfile_name = 'test.txt'
+    testfile = tmpdir.join(testfile_name)
+    testfile.write('Unimportant content')
+    testfile = Path(testfile)
 
-    create_form.copy_to_temp(src=a_file)
+    create_form.PredefinedTemplateFile.copy_to_temp(
+        source=testfile,
+        destination=create_form.TEMP_DIR.joinpath(testfile_name))
 
-    assert os.path.exists(create_form.TEMP_DIR.joinpath('test.txt'))
+    assert os.path.exists(create_form.TEMP_DIR.joinpath(testfile_name))

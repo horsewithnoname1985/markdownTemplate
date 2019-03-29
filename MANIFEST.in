@@ -2,3 +2,4 @@ include requirements.txt
 recursive-include mdtemplate/files *
 recursive-include mdtemplate/static *
 recursive-include mdtemplate/templates *
+include mdtemplate/form_field_names.ini

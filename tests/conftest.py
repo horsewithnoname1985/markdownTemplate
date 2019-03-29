@@ -1,5 +1,10 @@
 import pytest
 import os
+
+# import logging
+# import os
+# logging.warning(os.getcwd())
+
 from mdtemplate import create_form
 from shutil import rmtree
 
@@ -13,4 +18,4 @@ def remove_temporary_dir_after_test():
 
 @pytest.fixture()
 def reset_temp_dir():
-    create_form.reset_temp_dir()
+    create_form.TemplateArchiver._reset_temp_dir()
