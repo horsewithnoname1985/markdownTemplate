@@ -5,98 +5,105 @@
 {% block body %}
 <script src="/static/form.js"></script>
 <div class="mainframe">
-<h2>Welcome to the markdown template creation!</h2>
+    <h2>Welcome to the markdown template creation!</h2>
 
-<form method="POST" action="/create_template">
-<p>1) Please enter your template data</p>
-    <table>
-        <tr>
-            <td>
-                Title:
-            </td>
-            <td>
-                <textarea name="title" cols="30" rows="3" class="required" required></textarea>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Author:
-            </td>
-            <td>
-                <input name="author" type="text" width="30" class=required" required>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Date:
-            </td>
-            <td>
-                <input name="date" type="date" class=required" required>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Project:
-            </td>
-            <td>
-                <input name="project" type="text" width="30">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Language:
-            </td>
-            <td>
-                <input name="language" type="radio" value="de"
-                       id="lang_de">
-                <label for="lang_de">German</label>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <input name="language" type="radio" value="en"
-                       id="lang_en" checked="True">
-                <label for="lang_en">English</label>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Filename:
-            </td>
-            <td>
-                <input name="filename" type="text" class="required" required>
-            </td>
-        </tr>
-        <!--#TODO:Add pandoc mermaid + pandoc plantuml filter checkbox options-->
-    </table>
+    <form method="POST" action="/create_template">
+        <p>1) Please enter your template data</p>
+        <table>
+            <tr>
+                <td>
+                    Title:
+                </td>
+                <td>
+                    <textarea name="{{title}}" id="title_field"
+                              cols="30" rows="3"
+                              class="required" required></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Author:
+                </td>
+                <td>
+                    <input name="{{author}}" id="author_field" type="text"
+                           width="30" class=required" required>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Date:
+                </td>
+                <td>
+                    <input name="{{date}}" id="date_selector" type="date"
+                           class=required" required>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Project:
+                </td>
+                <td>
+                    <input name="{{project}}" id="project_field" type="text"
+                           width="30">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Language:
+                </td>
+                <td>
+                    <input name="{{language}}" type="radio" value="de"
+                           id="lang_de">
+                    <label for="lang_de">German</label>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input name="{{language}}" type="radio" value="en"
+                           id="lang_en" checked="True">
+                    <label for="lang_en">English</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Filename:
+                </td>
+                <td>
+                    <input name="{{filename}}" id="filename_field" type="text"
+                           class="required"
+                           required>
+                </td>
+            </tr>
+            <!--#TODO:Add pandoc mermaid + pandoc plantuml filter checkbox options-->
+        </table>
 
-    <p>2) Choose a template</p>
-    <table>
-        <tr>
-            <td>
-                <input name="style" type="radio" value="Default"
-                id="default" checked="True">
-                <img src="/images/test.png">
-            </td>
-            <td>
-                <input name="style" type="radio" value="RobotFramework"
-                id="robot_framework">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Default</label>
-            </td>
-            <td>
-                <label>Robot Framework</label>
-            </td>
-        </tr>
-    </table>
+        <p>2) Choose a template</p>
+        <table>
+            <tr>
+                <td>
+                    <input name="style" type="radio" value="Default"
+                           id="tmpl_default" checked="True">
+                    <img src="/images/test.png">
+                </td>
+                <td>
+                    <input name="style" type="radio" value="RobotFramework"
+                           id="tmpl_robot_framework">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Default</label>
+                </td>
+                <td>
+                    <label>Robot Framework</label>
+                </td>
+            </tr>
+        </table>
 
-    <p>3) Click 'Create template' to get your template files</p>
-    <input id="submit" name="submit" type="submit" value="Create template">
+        <p>3) Click 'Create template' to get your template files</p>
+        <input name="submit" id="submit" type="submit" value="Create template">
 
-</form>
+    </form>
 </div>
 {% endblock %}

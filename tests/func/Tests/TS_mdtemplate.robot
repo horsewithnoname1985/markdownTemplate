@@ -18,19 +18,21 @@ Application is launched successfully
     [Teardown]  Close browser and app
     Given the browser is closed
     When the application is launched
+    Then a browser window is opened
     And the application url is opened
-    Then the user form is displayed
+    And the user form is displayed
 
 All required fields must contain data to create download archive
     [Tags]      restriction
     [Setup]     Start app and open url
     [Teardown]  Close browser and app
     Given the user form is displayed
-    When the create download button is clicked
-    Then the download file is not created
+    When the user form is submitted
+    Then a warning message about missing user data is displayed
+    Then the download archive is not created
 
 Download file is created when all fields contain data
-    [Tags]    restriction    draft
+    [Tags]    restriction   draft
     [Setup]   Start app and open url
     Given the user form is displayed
     When all fields receive proper data

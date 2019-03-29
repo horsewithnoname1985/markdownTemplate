@@ -1,11 +1,15 @@
 from mdtemplate import create_form
 from threading import Thread, Event
 from SeleniumLibrary.base import keyword
-from tests.func.Libraries.selenium_helper import SeleniumHelper
+from tests.func.Libraries.helper.selenium_helper import SeleniumHelper
 import time
 
 
 class Application:
+    """
+    This class provides keywords for controlling the application under test,
+    such as launching and quitting.
+    """
 
     url = ""
     app_thread = None
