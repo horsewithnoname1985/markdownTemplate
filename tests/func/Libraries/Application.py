@@ -22,10 +22,11 @@ class Application:
         """Returns current session's application url"""
         return create_form.URL + ":" + str(create_form.PORT)
 
+
     @keyword
     def launch_application(self):
         """Hosts app on server"""
-        self.app_thread = Thread(target=create_form.main, args=(False,))
+        self.app_thread = Thread(target=create_form.main, args=(False, False,))
         self.app_thread.start()
         time.sleep(2)
         self.url = self.get_url()

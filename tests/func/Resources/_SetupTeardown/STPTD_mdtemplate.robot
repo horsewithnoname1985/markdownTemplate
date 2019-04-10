@@ -1,23 +1,30 @@
 *** Settings ***
 Documentation   Setup and teardown keywords for mdtemplate
-#Resource        ${EXECDIR}/func/Resources/_Steps/STPS_application.robot
-Resource        ${EXECDIR}/func/Resources/_Units/browser.robot
-Resource        ${EXECDIR}/func/Resources/_Units/application.robot
-#Library         ${EXECDIR}/func/Libraries/app_runner.py
-#Library         SeleniumLibrary
-Resource        ${EXECDIR}/func/Resources/_LibraryAdapters/SeleniumLibraryAdapter.robot
-#Resource        ${EXECDIR}/func/Resources/_LibraryAdapters/ApplicationLibraryAdapter.robot
+Resource        ${EXECDIR}/Resources/_LibraryAdapters/SeleniumLibraryAdapter.robot
+Resource        ${EXECDIR}/Resources/_LibraryAdapters/ApplicationLibraryAdapter.robot
+Resource        ${EXECDIR}/Resources/_LibraryAdapters/FormLibraryAdapter.robot
+#Resource        ${EXECDIR}/Resources/
 
 *** Variables ***
 ${XPATH_CREATE_TEMPLATE_BUTTON}    xpath://html/body/div[1]/form/input
 
 
 *** Keywords ***
-Start app and open url
-    the browser is closed
-    ${APP_URL}=    the application is launched
-    the application url is opened    ${APP_URL}
+application is started
+    ${APP_URL}=    launch application
+    set test variable    ${APP_URL}
 
-Close browser and app
+start app and open url
+    close browser
+    application is started
+#    ${APP_URL}=    launch application
+#    set test variable    ${APP_URL}
+    open browser         ${APP_URL}
+
+close browser and app
     shutdown application
     close browser
+
+new form is filled with valid data
+    open browser         ${APP_URL}
+    fill out form using proper data

@@ -1,13 +1,14 @@
 *** Settings ***
-Documentation    Suite description
+Documentation   Suite description
+
+Resource        ${EXECDIR}/Resources/_SetupTeardown/STPTD_mdtemplate.robot
+Resource    ${EXECDIR}/Resources/_Units/application.robot
+Resource    ${EXECDIR}/Resources/_Units/browser.robot
 
 *** Test Cases ***
-Test title
-    [Tags]    DEBUG
-    Provided precondition
-    When action
-    Then check expectations
-
-*** Keywords ***
-Provided precondition
-    Setup system under test
+Application is launched successfully
+    [Tags]      app_launch
+    [Teardown]  Close browser and app
+    When the application is launched
+    And the application url is opened
+    Then the user form is displayed

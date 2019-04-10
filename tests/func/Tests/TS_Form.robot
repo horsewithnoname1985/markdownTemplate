@@ -1,7 +1,9 @@
 *** Settings ***
-Documentation       mdtemplate test suite
-Resource            ${EXECDIR}/Resources/_SetupTeardown/STPTD_mdtemplate.robot
-Resource            ${EXECDIR}/Resources/_Steps/STPS_mdtemplate.robot
+Documentation   mdtemplate test suite
+Resource        ${EXECDIR}/Resources/_SetupTeardown/STPTD_mdtemplate.robot
+Resource        ${EXECDIR}/Resources/_Units/form.robot
+Resource        ${EXECDIR}/Resources/_Units/browser.robot
+Resource        ${EXECDIR}/Resources/_Units/template_creation.robot
 
 Metadata            Version     1.0
 Metadata            Author      Arne Wohletz
@@ -17,14 +19,14 @@ All required fields must contain data to create download archive
     Given the user form is displayed
     When the user form is submitted
     Then a warning message about missing user data is displayed
-    Then the download archive is not created
+    And the download archive is not created
 
 Download file is created when all fields contain data
-    [Tags]      restriction   draft
+    [Tags]      restriction
     [Setup]     Start app and open url
     [Teardown]  Close browser and app
     Given the user form is displayed
-    When all form fields are filled out
+    When the entire form is filled with valid data
     And the user form is submitted
     Then the archive file is offered for download
 
@@ -33,15 +35,6 @@ Download file is not created when required data is missing
     [Setup]     Start app and open url
     [Teardown]  Close browser and app
     Given the user form is displayed
-    When all form fields except author are filled out
+    When the entire form except the title is filled with valid data
     And the user form is submitted
     Then the archive file is not created
-
-Correct template files are downloaded
-    [Setup]     Start app and open url
-    [Teardown]  Close browser and app
-    Given the user form is displayed
-    And the Robot Framework style is selected
-    And the English language is selected
-    When the user form is submitted
-    Then the correct template files reside in the download archive

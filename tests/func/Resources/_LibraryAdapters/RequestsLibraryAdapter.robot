@@ -1,6 +1,5 @@
-*** Keywords ***
-First keyword
-    Do something
+*** Settings ***
+Documentation   This library provides Requests library to other
+...             *.robot files
 
-Second keyword
-    Do more
+Library         RequestsLibrary

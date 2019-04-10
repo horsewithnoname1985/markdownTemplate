@@ -28,7 +28,6 @@ import webbrowser
 import random
 import threading
 from abc import ABC
-from configparser import ConfigParser
 
 
 # HOSTING
@@ -71,13 +70,23 @@ logging.basicConfig(
     level=logging.INFO, format=" %(asctime)s - %(levelname)s - %(message)s"
 )
 
-config_parser = ConfigParser()
-form_field_names_ini_path = BASE_DIR.joinpath("form_field_names.ini")
-config_parser.read(form_field_names_ini_path)
-form_field_names = dict(config_parser.items(config_parser.sections()[0]))
+# config_parser = ConfigParser()
+# form_field_names_ini_path = BASE_DIR.joinpath("form_field_names.ini")
+# config_parser.read(form_field_names_ini_path)
+# form_field_names = dict(config_parser.items(config_parser.sections()[0]))
+
+form_field_names = {
+    "author": "author",
+    "date": "date",
+    "filename": "filename",
+    "language": "language",
+    "project": "project",
+    "style": "style",
+    "title": "title"
+}
 
 
-def main(autostart=False):
+def main(autostart=False, debug=True):
     """Launches app on localhost"""
     global PORT
     PORT = 5000 + random.randint(0, 999)
@@ -85,7 +94,7 @@ def main(autostart=False):
 
     if autostart:
         threading.Timer(1.25, lambda: webbrowser.open(url)).start()
-    app.run(port=PORT, debug=False)
+    app.run(port=PORT, debug=debug)
 
 
 @app.context_processor
@@ -98,8 +107,8 @@ def form_page():
     return render_template("form.html")
 
 
-@app.route("/create_template", methods=["POST", "GET"])
-def get_template_as_download() -> zipfile:
+@app.route("/create_template_archive", methods=["POST"])
+def create_template_archive() -> zipfile:
     """Define 'Create template' button click action"""
 
     user_data = UserInputData()

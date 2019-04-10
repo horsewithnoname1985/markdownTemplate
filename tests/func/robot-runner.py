@@ -4,16 +4,19 @@ import argparse
 import subprocess
 from pathlib import Path
 
-ROOT_DIR = Path(os.path.abspath(__file__)).parent.parent
-RESULT_DIR = Path(ROOT_DIR.joinpath('tests/func/Results'))
+ROOT_DIR = Path(os.path.abspath(__file__)).parent
+RESULT_DIR = Path(ROOT_DIR.joinpath('Results'))
 SRC_DIR = ROOT_DIR.joinpath('mdtemplate')
-ACCEPTANCE_TEST_DIR = ROOT_DIR.joinpath('tests/func/Tests')
-TEST_LIB_DIR = ROOT_DIR.joinpath('tests/func/Libraries')
+ACCEPTANCE_TEST_DIR = ROOT_DIR.joinpath('Tests')
+TEST_LIB_DIR = ROOT_DIR.joinpath('Libraries')
+VARIABLES_DIR = ROOT_DIR.joinpath('Resources/_Variables')
 
 ROBOT_OPTIONS = [
     '--outputdir', str(RESULT_DIR),
     '--pythonpath', str(SRC_DIR),
-    '--variable', 'BROWSER:{browser}',
+    # '--variable', 'BROWSER:{browser}',
+    '--variable', 'SRC_DIR:{}'.format(str(SRC_DIR)),
+    '--variable', 'VARIABLES_DIR:{}'.format(str(VARIABLES_DIR)),
     '--pythonpath', str(TEST_LIB_DIR)
 ]
 

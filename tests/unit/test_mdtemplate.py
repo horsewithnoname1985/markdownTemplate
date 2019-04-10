@@ -10,7 +10,7 @@ BASE_DIR = Path(dirname(os.path.abspath(__file__)))
 
 
 def get_mocked_user_input():
-    config: ConfigParser = configparser.ConfigParser()
+    config: ConfigParser = ConfigParser()
     config.read(BASE_DIR.joinpath('form_data.ini'))
     user_input = config.items(config.sections()[0])
     return dict(user_input)

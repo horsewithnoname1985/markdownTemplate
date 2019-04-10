@@ -1,6 +1,5 @@
-*** Keywords ***
-First keyword
-    Do something
+*** Settings ***
+Documentation   This library provides OperatingSystem library to other
+...             *.robot files
+Library         OperatingSystem
 
-Second keyword
-    Do more

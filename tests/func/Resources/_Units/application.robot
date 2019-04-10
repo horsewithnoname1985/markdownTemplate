@@ -1,15 +1,20 @@
 *** Settings ***
-Documentation   Application action keywords
-Resource        ${EXECDIR}/func/Resources/_LibraryAdapters/SeleniumLibraryAdapter.robot
-Resource        ${EXECDIR}/func/Resources/_LibraryAdapters/ApplicationLibraryAdapter.robot
-#Library             app_runner.Application
+#Documentation   Application action keywords
+Resource        ${EXECDIR}/Resources/_Units/browser.robot
+Resource        ${EXECDIR}/Resources/_LibraryAdapters/SeleniumLibraryAdapter.robot
 
 
 *** Keywords ***
-launch application
-    ${APP_URL}=   launch application
-    Set test variable  ${APP_URL}
-    [Return]    ${APP_URL}
+the application is launched
+    [Documentation]   Similar to setup method, but without opening browser
 
-the application is closed
-    shutdown application
+    ${APP_URL}=    application.launch application
+    Set test variable    ${APP_URL}
+
+the application url is opened
+    [Documentation]  Opens application url (app must be launched priorly)
+
+    open browser  url=${APP_URL}  browser=firefox
+
+#the user form is displayed
+#    browser displays form page

@@ -1,9 +1,15 @@
 *** Settings ***
 Documentation   Suite description
 
-Resource        ${EXECDIR}/Resources/_Steps/STPS_Archive.robot
-Resource        ${EXECDIR}/Resources/_Steps/STPS_Form.robot
+#Resource        ${EXECDIR}/Resources/_Steps/STPS_TemplateArchive.robot
+#Resource        ${EXECDIR}/Resources/_Steps/STPS_Form.robot
 Resource        ${EXECDIR}/Resources/_SetupTeardown/STPTD_mdtemplate.robot
+Resource        ${EXECDIR}/Resources/_Units/form.robot
+Resource        ${EXECDIR}/Resources/_Units/browser.robot
+Resource        ${EXECDIR}/Resources/_Units/template_creation.robot
+
+Suite Setup     application is started
+Test Setup      new form is filled with valid data
 
 #*** Test Cases ***
 #Correct template files are downloaded
@@ -18,14 +24,12 @@ Resource        ${EXECDIR}/Resources/_SetupTeardown/STPTD_mdtemplate.robot
 *** Test Cases ***
 Archive contains correct predefined template files
     [Tags]    DEBUG
-    Given all form data is entered
-    And the English language is selected
+    Given the English language is selected
     And the RobotFramework style template is selected
     When the user form is submitted
-    Then the correct files reside in the resulting archive
+    Then the selected files reside in the resulting archive
 
 Archive file contains all required files
     [Tags]    nothing
-    Given all form data is entered
     When the user form is submitted
-    Then all required files reside in the resulting archive
+    Then all template files reside in the resulting archive

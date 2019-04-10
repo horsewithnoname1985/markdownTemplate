@@ -1,7 +1,8 @@
 *** Settings ***
 Documentation       User form interaction keywords
-Resource            ${EXECDIR}/func/Resources/_LibraryAdapters/SeleniumLibraryAdapter.robot
-Resource            ${EXECDIR}/func/Resources/_Data/form_data.robot
+Resource            ${EXECDIR}/Resources/_LibraryAdapters/SeleniumLibraryAdapter.robot
+Resource            ${EXECDIR}/Resources/_LibraryAdapters/RequestsLibraryAdapter.robot
+Resource            ${EXECDIR}/Resources/_LibraryAdapters/FormLibraryAdapter.robot
 
 *** Variables ***
 ${FLD_TITLE_CSS}            css:#title_field
@@ -17,18 +18,39 @@ ${RADIO_TEMPLATE_RF_CSS}        css:#tmpl_robot_framework
 
 
 *** Keywords ***
-create download button is clicked
+the user form is submitted
+    # TODO: reimplement keyword
     click button    ${XPATH_CREATE_TEMPLATE_BUTTON}
 
 the download file is not created
     alert should be present    Please fill out all mandatory fields
 
-all fields receive proper data
-    input text      ${FLD_TITLE_CSS}                ${FORM_DATA_TITLE}
-    input text      ${FLD_AUTHOR_CSS}               ${FORM_DATA_AUTHOR}
-    input text      ${FLD_DATE_CSS}                 ${FORM_DATA_DATE}
-    input text      ${FLD_PROJECT_CSS}              ${FORM_DATA_PROJECT}
-    click element   ${RADIO_LANGUAGE_DE_CSS}
-    input text      ${FLD_FILENAME_CSS}             ${FORM_DATA_FILENAME}
-    click element   ${RADIO_TEMPLATE_DEFAULT_CSS}
+the entire form except the ${exclude} is filled with valid data
+    [Documentation]    A single data set can be excluded from receiving
+    ...    proper input data. For radio button, this means, that the
+    ...    preselected setting is applied.
+    ...    ${exclude} must be the name of a data element (e.g. style, title)
+    fill out form except ${exclude}
 
+the entire form is filled with valid data
+    fill out form using proper data
+
+send POST request to create template archive
+    create session    mdtemplate      ${APP_URL}
+    &{header}=    create dictionary   Content-Type=application/x-www-form-urlencoded
+    &{data}=    get form data for post request
+    ${resp}=          Post request    mdtemplate    /create_template_archive
+    ...    data=&{data}    headers=&{header}
+    [Return]    ${resp}
+
+a warning message about missing user data is displayed
+    Log  Implement me
+    # TODO: Implement keyword
+
+the ${language} language is selected
+    Log  Implement me
+    # TODO: Implement keyword
+
+the ${style} style template is selected
+    Log  Implement me
+    # TODO: Implement keyword
