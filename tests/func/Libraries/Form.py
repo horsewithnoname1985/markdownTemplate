@@ -11,7 +11,7 @@ from robot.api.deco import keyword
 from SeleniumLibrary import SeleniumLibrary
 from robot.libraries.BuiltIn import BuiltIn
 from robot.api import logger
-
+import sys, pdb
 
 # class Form(SeleniumLibrary):
 class Form:
@@ -34,8 +34,10 @@ class Form:
         """
 
         actions = self._get_actions(exclude)
+        # pdb.Pdb(stdout=sys.__stdout__).set_trace()
 
         for locator, input_value in actions.items():
+
             element = self.selenium_lib.driver.find_element_by_css_selector(
                 locator)
             element_type = self._get_element_type(element)
@@ -84,7 +86,7 @@ class Form:
 
         return element_type
 
-    def _get_actions(self, exclude: list = None) -> dict:
+    def _get_actions(self, exclude: str = None) -> dict:
         css_locators = get_ini_as_dict(self.paths['locators'], 'css')
         input_data = get_ini_as_dict(self.paths['test_data'], 'default')
 
@@ -101,22 +103,27 @@ class Form:
         for name, value in data.items():
             if name == "language":
                 data.pop(name)
-                if value == "en":
+                if value.lower() == "en":
                     data["lang_en"] = True
-                elif name == "de":
+                elif name.lower() == "de":
                     data["lang_de"] = True
             if name == "style":
                 data.pop(name)
-                if value == "default":
+                if value.lower() == "default":
                     data["style_default"] = True
-                if value == "robot":
+                if value.lower() == "robot":
                     data["style_robot_framework"] = True
 
         return data
 
-    def _remove_excluded_input(self, input_data: dict, exclude: list) -> dict:
+    def _remove_excluded_input(self, input_data: dict, exclude: str) -> dict:
         for key in input_data.keys():
-            if key in exclude:
+            if key.lower() == exclude.lower():
                 input_data.pop(key)
 
         return input_data
+
+
+if __name__ == '__main__':
+    f = Form()
+    f.insert_all_form_data()

@@ -4,12 +4,24 @@ import argparse
 import subprocess
 from pathlib import Path
 
-ROOT_DIR = Path(os.path.abspath(__file__)).parent
-RESULT_DIR = Path(ROOT_DIR.joinpath('Results'))
-SRC_DIR = ROOT_DIR.joinpath('mdtemplate')
-ACCEPTANCE_TEST_DIR = ROOT_DIR.joinpath('Tests')
-TEST_LIB_DIR = ROOT_DIR.joinpath('Libraries')
-VARIABLES_DIR = ROOT_DIR.joinpath('Resources/_Variables')
+# Keep this for later fixing: debugger doesn't work if using PosixPaths
+# ("object of type 'PosixPath' has no len()" appears at start and breakpoints
+# don't stop execution)
+# ===========================================================================
+# ROOT_DIR = Path(os.path.abspath(__file__)).parent
+# RESULT_DIR = Path(ROOT_DIR.joinpath('Results'))
+# SRC_DIR = ROOT_DIR.joinpath('mdtemplate')
+# ACCEPTANCE_TEST_DIR = ROOT_DIR.joinpath('Tests')
+# TEST_LIB_DIR = ROOT_DIR.joinpath('Libraries')
+# VARIABLES_DIR = ROOT_DIR.joinpath('Resources/_Variables')
+#===========================================================================
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+RESULT_DIR = os.path.join(ROOT_DIR, 'Results')
+SRC_DIR = os.path.join(ROOT_DIR, 'mdtemplate')
+ACCEPTANCE_TEST_DIR = os.path.join(ROOT_DIR, 'Tests')
+TEST_LIB_DIR = os.path.join(ROOT_DIR, 'Libraries')
+VARIABLES_DIR = os.path.join(ROOT_DIR, 'Resources/_Variables')
 
 ROBOT_OPTIONS = [
     '--outputdir', str(RESULT_DIR),

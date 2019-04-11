@@ -22,7 +22,7 @@ All required fields must contain data to create download archive
     And the download archive is not created
 
 Download file is created when all fields contain data
-    [Tags]      restriction
+    [Tags]      restriction  draft
     [Setup]     Start app and open url
     [Teardown]  Close browser and app
     Given the user form is displayed
