@@ -3,7 +3,7 @@ from tests.func.Libraries.helper.decorators import checkargs
 import sys, pdb
 
 @checkargs
-def get_ini_as_dict(path: str, section: str) -> dict:
+def get_ini_section_data(path: str, section: str) -> dict:
     config: ConfigParser = ConfigParser()
     config.read(path)
     user_input = config.items(section)

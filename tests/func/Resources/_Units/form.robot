@@ -16,11 +16,11 @@ ${RADIO_LANGUAGE_EN_CSS}        css:#lang_en
 ${RADIO_TEMPLATE_DEFAULT_CSS}   css:#tmpl_default
 ${RADIO_TEMPLATE_RF_CSS}        css:#tmpl_robot_framework
 
+${BUTTON_SUBMIT_CSS}        css:#submit
 
 *** Keywords ***
 the user form is submitted
-    # TODO: reimplement keyword
-    click button    ${XPATH_CREATE_TEMPLATE_BUTTON}
+    click button    ${BUTTON_SUBMIT_CSS}
 
 the download file is not created
     alert should be present    Please fill out all mandatory fields
