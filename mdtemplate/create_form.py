@@ -95,7 +95,11 @@ def main(autostart=False, debug=True):
     if autostart:
         threading.Timer(1.25, lambda: webbrowser.open(url)).start()
 
-    app.run(port=PORT, debug=debug)
+    if debug:
+        app.run(port=PORT, debug=debug)
+    if not debug:
+        return URL, PORT
+        # app.run(port=PORT, debug=debug)
 
 @app.context_processor
 def inject_form_field_names():

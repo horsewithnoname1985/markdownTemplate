@@ -1,4 +1,4 @@
-from mdtemplate.create_form import app
+from mdtemplate.create_form import app, main
 
-if __name__ == "__main__":
-    app.run()
+url, port = main(autostart=True, debug=False)
+app.run(port=port)

@@ -16,10 +16,10 @@ setup(
     package_dir={
         "mdtemplate": "mdtemplate",
     },
-    packages=["mdtemplate"],
+    packages=["mdtemplate", "wsgi"],
     include_package_data=True,
     entry_points={
-      "console_scripts": ["mdtemplate = mdtemplate.create_form:main"]
+        "console_scripts": ["mdtemplate = wsgi.wsgi_runner:main"]
     },
     author="Arne Wohletz",
     author_email="arnewohletz@gmx.de",
