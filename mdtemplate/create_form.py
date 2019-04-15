@@ -86,20 +86,23 @@ form_field_names = {
 }
 
 
-def main(autostart=False, debug=True):
+def main(autostart=False, debug=False, test=False):
     """Launches app on localhost"""
     global PORT
     PORT = 5000 + random.randint(0, 999)
     url = URL + ":{0}".format(PORT)
 
-    if autostart:
+    if autostart and not test:
         threading.Timer(1.25, lambda: webbrowser.open(url)).start()
+        if not debug:
+            return URL, PORT
 
     if debug:
         app.run(port=PORT, debug=debug)
-    if not debug:
-        return URL, PORT
-        # app.run(port=PORT, debug=debug)
+
+    if test:
+        app.run(port=PORT, debug=False)
+
 
 @app.context_processor
 def inject_form_field_names():
