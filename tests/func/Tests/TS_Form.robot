@@ -8,12 +8,9 @@ Resource        ${EXECDIR}/Resources/_Units/template_creation.robot
 Metadata            Version     1.0
 Metadata            Author      Arne Wohletz
 
-*** Variables ***
-#${APP_URL}      empty
-
 *** Test Cases ***
 All required fields must contain data to create download archive
-    [Tags]      restriction
+    [Tags]      restriction  draft
     [Setup]     Start app and open url
     [Teardown]  Close browser and app
     Given the user form is displayed
@@ -22,7 +19,7 @@ All required fields must contain data to create download archive
     And the download archive is not created
 
 Download file is created when all fields contain data
-    [Tags]      restriction  draft
+    [Tags]      restriction
     [Setup]     Start app and open url
     [Teardown]  Close browser and app
     Given the user form is displayed
