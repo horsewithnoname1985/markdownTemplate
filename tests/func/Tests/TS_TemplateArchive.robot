@@ -13,8 +13,8 @@ Test Setup      new form is filled with valid data
 
 #*** Test Cases ***
 #Correct template files are downloaded
-#    [Setup]     Start app and open url
-#    [Teardown]  Close browser and app
+#    [Setup]     Start app_unused and open url
+#    [Teardown]  Close browser and app_unused
 #    Given the user form is displayed
 #    And the Robot Framework style is selected
 #    And the English language is selected

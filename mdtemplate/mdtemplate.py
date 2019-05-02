@@ -30,10 +30,10 @@ import threading
 from abc import ABC
 
 
-# HOSTING
+# HOSTING (used for development only)
 # -------
 URL = "http://127.0.0.1"
-PORT = 0
+PORT = 5000
 
 # PATHS
 # -----
@@ -89,7 +89,8 @@ form_field_names = {
 def main(autostart=False, debug=False, test=False):
     """Launches app on localhost"""
     global PORT
-    PORT = 5000 + random.randint(0, 999)
+    # PORT = 5000 + random.randint(0, 999)
+    PORT = 5000
     url = URL + ":{0}".format(PORT)
 
     if autostart and not test:
@@ -102,6 +103,8 @@ def main(autostart=False, debug=False, test=False):
 
     if test:
         app.run(port=PORT, debug=False)
+
+    return URL, PORT
 
 
 @app.context_processor
