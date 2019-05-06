@@ -1,3 +1,3 @@
 .dockerignore
 .git
-/wsgi/*.sock
+**/*.sock
