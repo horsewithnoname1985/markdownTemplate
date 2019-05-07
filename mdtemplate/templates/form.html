@@ -9,21 +9,27 @@
 
     <form method="POST" action="/create_template_archive">
         <div>
-            <p>1) Please enter your template data</p>
+            <div class="tooltip area_title">1) Please enter your template data
+                <span class="tooltiptext">This data isn't permanent but can be changed manually in the resulting markdown document</span>
+            </div>
             <table>
                 <tr>
                     <td>
-                        Title:
+                        <div class="tooltip">Title:
+                            <span class="tooltiptext">Enter the document headline title</span>
+                        </div>
                     </td>
                     <td>
                         <textarea name="{{title}}" id="title_field"
                                   cols="30" rows="3"
-                                  class="required" required></textarea>
+                                  class="required tooltip" required></textarea>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        Author:
+                        <div class="tooltip">Author:
+                            <span class="tooltiptext">Enter the document author's name</span>
+                        </div>
                     </td>
                     <td>
                         <input name="{{author}}" id="author_field" type="text"
@@ -32,7 +38,9 @@
                 </tr>
                 <tr>
                     <td>
-                        Date:
+                        <div class="tooltip">Date:
+                            <span class="tooltiptext">Enter the date this document is created</span>
+                        </div>
                     </td>
                     <td>
                         <input name="{{date}}" id="date_selector" type="date"
@@ -41,16 +49,21 @@
                 </tr>
                 <tr>
                     <td>
-                        Project:
+                        <div class="tooltip">Project:
+                            <span class="tooltiptext">(Optional) Define the project this document belongs to</span>
+                        </div>
                     </td>
                     <td>
-                        <input name="{{project}}" id="project_field" type="text"
+                        <input name="{{project}}" id="project_field"
+                               type="text"
                                width="30">
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        Language:
+                        <div class="tooltip">Language:
+                            <span class="tooltiptext">Define the document template language</span>
+                        </div>
                     </td>
                     <td>
                         <input name="{{language}}" type="radio" value="de"
@@ -68,10 +81,13 @@
                 </tr>
                 <tr>
                     <td>
-                        Filename:
+                        <div class="tooltip">Filename:
+                            <span class="tooltiptext">Your markdown and resulting html file will have this filename (don't enter a file extension)</span>
+                        </div>
                     </td>
                     <td>
-                        <input name="{{filename}}" id="filename_field" type="text"
+                        <input name="{{filename}}" id="filename_field"
+                               type="text"
                                class="required"
                                required>
                     </td>
@@ -81,34 +97,46 @@
         </div>
 
         <div>
-            <p>2) Choose a template</p>
+            <div class="tooltip area_title">2) Choose a template
+                <span class="tooltiptext">Defines the style of the resulting html document</span>
+            </div>
             <table>
                 <tr>
                     <td>
-                        <input name="style" type="radio" value="Default"
-                               id="tmpl_default" checked="True">
-                        <img src="/images/test.png">
+
+                        <a class=thumbnail target="_blank" href="static/img/default_sample.png">
+                            <img src="static/img/default_sample.png" width="100" height="120">
+                        </a>
                     </td>
                     <td>
-                        <input name="style" type="radio" value="RobotFramework"
-                               id="tmpl_robot_framework">
+
+                        <a class=thumbnail target="_blank" href="static/img/robot_framework_sample.png">
+                            <img src="static/img/robot_framework_sample.png" width="100" height="120">
+                        </a>
                     </td>
                 </tr>
                 <tr>
                     <td>
+                        <input name="style" type="radio" value="Default"
+                               id="tmpl_default" checked="True">
                         <label>Default</label>
                     </td>
                     <td>
+                        <input name="style" type="radio" value="RobotFramework"
+                               id="tmpl_robot_framework">
                         <label>Robot Framework</label>
                     </td>
                 </tr>
             </table>
         </div>
         <div>
-            <p>3) Click 'Create template' to get your template files</p>
-            <input name="submit" id="submit" type="submit" value="Create template">
-            <!--<input type="submit" value="Create template">-->
+            <div class="tooltip area_title">3) Click 'Create template' to get your template files
+                <span class="tooltiptext">All required files are offered as zip download</span>
+            </div>
         </div>
+
+        <input name="submit" id="submit" type="submit"
+                   value="Create template">
 
     </form>
 </div>
