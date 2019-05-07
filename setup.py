@@ -4,7 +4,7 @@ import re
 
 CURDIR = dirname(abspath(__file__))
 version = re.search(r'^__version__\s*=\s*"(.*)"',
-                    open('mdtemplate/create_form.py').read(), re.M).group(1)
+                    open('mdtemplate/mdtemplate.py').read(), re.M).group(1)
 
 with open(join(CURDIR, "requirements.txt")) as f:
     REQUIREMENTS = f.read().splitlines()
@@ -23,6 +23,6 @@ setup(
     },
     author="Arne Wohletz",
     author_email="arnewohletz@gmx.de",
-    description="Web app for markdown template creation",
+    description="Web app_unused for markdown template creation",
     install_requires=REQUIREMENTS
 )

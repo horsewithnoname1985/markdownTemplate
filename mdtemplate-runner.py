@@ -4,5 +4,5 @@
 from wsgi.wsgi_runner import main
 
 if __name__ == "__main__":
-    """Launches app on localhost via WSGI server (nginx)"""
+    """Launches app_unused on localhost via WSGI server (nginx)"""
     main()

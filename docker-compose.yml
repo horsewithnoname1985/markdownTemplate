@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  uwsgi-nginx-flask:
+    image: 'tiangolo/uwsgi-nginx-flask:python3.7'
+
+
+  mdtemplate:
+    build: '.'
+    depends_on:
+      - 'uwsgi-nginx-flask'
+#    env_file:
+#      - '.env'
+    ports:
+      - '5000:5000'
+    container_name: 'mdtemplate_compose'
+    volumes:
+      - '$PWD/mdtemplate:/app/mdtemplate'

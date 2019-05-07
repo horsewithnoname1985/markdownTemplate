@@ -1,5 +1,5 @@
 from configparser import ConfigParser
-from mdtemplate import create_form
+from mdtemplate import mdtemplate
 from pathlib import Path
 import os
 import configparser
@@ -22,9 +22,9 @@ def test_reset_output_dirs(remove_temporary_dir_after_test):
     WHEN the temp dir is reset
     THEN the temp dir is available
     """
-    create_form.TemplateArchiver._reset_temp_dir()
-    dir_content = os.listdir(create_form.os.getcwd())
-    temp_dir_name = create_form.TEMP_DIR.name
+    mdtemplate.TemplateArchiver._reset_temp_dir()
+    dir_content = os.listdir(mdtemplate.os.getcwd())
+    temp_dir_name = mdtemplate.TEMP_DIR.name
 
     assert temp_dir_name in dir_content
 
@@ -48,11 +48,11 @@ def test_template_archiver(mocker) -> None:
         MockedUserData.title = data["title"]
         MockedUserData.filename = data["filename"]
 
-        create_form.TemplateArchiver(MockedUserData)
+        mdtemplate.TemplateArchiver(MockedUserData)
         html_template_file_name = MockedUserData.style + "_template_" + \
                                   MockedUserData.language + ".html"
         assert os.path.exists(
-            create_form.TEMP_DIR.joinpath(html_template_file_name))
+            mdtemplate.TEMP_DIR.joinpath(html_template_file_name))
 
 
 def test_copy_to_temp(tmpdir,
@@ -69,8 +69,8 @@ def test_copy_to_temp(tmpdir,
     testfile.write('Unimportant content')
     testfile = Path(testfile)
 
-    create_form.PredefinedTemplateFile.copy_to_temp(
+    mdtemplate.PredefinedTemplateFile.copy_to_temp(
         source=testfile,
-        destination=create_form.TEMP_DIR.joinpath(testfile_name))
+        destination=mdtemplate.TEMP_DIR.joinpath(testfile_name))
 
-    assert os.path.exists(create_form.TEMP_DIR.joinpath(testfile_name))
+    assert os.path.exists(mdtemplate.TEMP_DIR.joinpath(testfile_name))

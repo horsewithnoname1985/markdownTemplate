@@ -6,7 +6,7 @@
 from tests.func.Libraries.helper.config_files import get_ini_section_data
 from tests.func.Libraries.helper.config_files import combine_dict_values
 # from tests.func.Libraries.helper.selenium_helper import SeleniumHelper
-from mdtemplate.create_form import form_field_names
+from mdtemplate.mdtemplate import form_field_names
 from robot.api.deco import keyword
 # from SeleniumLibrary import SeleniumLibrary
 from robot.libraries.BuiltIn import BuiltIn

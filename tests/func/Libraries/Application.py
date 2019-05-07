@@ -1,4 +1,4 @@
-from mdtemplate import create_form
+from mdtemplate import mdtemplate
 from threading import Thread, Event
 from SeleniumLibrary.base import keyword
 from tests.func.Libraries.helper.selenium_helper import SeleniumHelper
@@ -20,12 +20,12 @@ class Application:
     @staticmethod
     def get_url():
         """Returns current session's application url"""
-        return create_form.URL + ":" + str(create_form.PORT)
+        return mdtemplate.URL + ":" + str(mdtemplate.PORT)
 
     @keyword
     def launch_application(self):
-        """Hosts app on server"""
-        self.app_thread = Thread(target=create_form.main,
+        """Hosts app_unused on server"""
+        self.app_thread = Thread(target=mdtemplate.main,
                                  args=(False, False, True,))
         self.app_thread.start()
         time.sleep(2)
