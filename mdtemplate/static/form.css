@@ -25,6 +25,7 @@ h2{
   font-size:          1.8em;
 }
 
+/*-----------------------------TABLES----------------------------------------*/
 table{
   border:             2px solid gray;
   margin-left:        30px;
@@ -32,6 +33,21 @@ table{
   padding:            10px;
   background-color:   #BAA288;
 }
+
+#chapter_table{
+  border-bottom:      none;
+  width:              421px;
+  margin-bottom:      0px;
+  padding-bottom:     0px;
+}
+
+#chapter_presets {
+  width:              421px;
+  border-top:         none;
+  min-width:          min-content;
+}
+
+/*--------------------------FORM INPUT FIELDS--------------------------------*/
 
 textarea{
   font-size:        115%;
@@ -56,6 +72,8 @@ input[type=submit] {
   font-size:        125%;
   margin-left:      30px;
 }
+
+
 select {
   font-size:        125%;
 }
@@ -75,7 +93,15 @@ select {
   background-color: #088A08;
 }
 
+.rm_btn {
+  background-color: #DF0101;
+  margin-left: 10px;
+}
 
+.mv_btn {
+  padding: 0px 10px;
+  background-color: black;
+}
 
 /*----------------------TOOLTIPS-----------------------------------------------*/
  /* Tooltip container */
