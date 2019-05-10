@@ -4,6 +4,9 @@
 
 {% block body %}
 <script src="/static/form.js"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.8.2/js/all.js"
+        integrity="sha384-DJ25uNYET2XCl5ZF++U8eNxPWqcKohUUBUpKGlNLMchM7q4Wjg2CUpjHLaL8yYPH"
+        crossorigin="anonymous"></script>
 <div class="mainframe">
     <h2>Welcome to the markdown template creator!</h2>
 
@@ -97,21 +100,59 @@
         </div>
 
         <div>
-            <div class="tooltip area_title">2) Choose a template
+
+        </div>
+        <div class="tooltip area_title">2) Define chapter titles
+            <span class="tooltiptext">Chapters belows are added to template in topdown order</span>
+        </div>
+        <div>
+            <table>
+                <tr>
+                    <td>
+                        <div class="tooltip">
+                            <button class="icon_btn add_btn">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <span class="tooltiptext">Add a new chapter title</span>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="tooltip">
+                            <p>Load presets:</p>
+                            <span class="tooltiptext">Sets default chapter titles in selected language</span>
+                    </td>
+                    <td>
+                        <input class=btn_preset type="button" value="English">
+                    </td>
+                    <td>
+                        <input class=btn_preset type="button" value="German">
+                    </td>
+                </tr>
+            </table>
+
+
+            <div class="tooltip area_title">3) Choose a template
                 <span class="tooltiptext">Defines the style of the resulting html document</span>
             </div>
             <table>
                 <tr>
                     <td>
 
-                        <a class=thumbnail target="_blank" href="static/img/default_sample.png">
-                            <img src="static/img/default_sample.png" width="100" height="120">
+                        <a class=thumbnail target="_blank"
+                           href="static/img/default_sample.png">
+                            <img src="static/img/default_sample.png"
+                                 width="100" height="120">
                         </a>
                     </td>
                     <td>
 
-                        <a class=thumbnail target="_blank" href="static/img/robot_framework_sample.png">
-                            <img src="static/img/robot_framework_sample.png" width="100" height="120">
+                        <a class=thumbnail target="_blank"
+                           href="static/img/robot_framework_sample.png">
+                            <img src="static/img/robot_framework_sample.png"
+                                 width="100" height="120">
                         </a>
                     </td>
                 </tr>
@@ -130,13 +171,14 @@
             </table>
         </div>
         <div>
-            <div class="tooltip area_title">3) Click 'Create template' to get your template files
+            <div class="tooltip area_title">3) Click 'Create template' to get
+                your template files
                 <span class="tooltiptext">All required files are offered as zip download</span>
             </div>
         </div>
 
         <input name="submit" id="submit" type="submit"
-                   value="Create template">
+               value="Create template">
 
     </form>
 </div>

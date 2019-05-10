@@ -17,7 +17,6 @@ body{
 }
 
 .thumbnail{
-  /*width: 100px;*/
   padding: 10px;
   vertical-align: bottom
 }
@@ -60,12 +59,29 @@ input[type=submit] {
 select {
   font-size:        125%;
 }
-/*-------------------------------------------------------------------------------*/
+
+/*----------------------BUTTONS------------------------------------------------*/
+.icon_btn {
+  color: white;
+  border: solid 1px;
+  color: white;
+  padding: 2px 5px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.add_btn {
+  background-color: #088A08;
+}
+
+
+
+/*----------------------TOOLTIPS-----------------------------------------------*/
  /* Tooltip container */
 .tooltip {
   position: relative;
   display: inline-block;
-  /*border-bottom: 1px dotted black; If you want dots under the hoverable text */
 }
 
 /* Tooltip text */
@@ -80,7 +96,6 @@ select {
   color: #fff;
   text-align: center;
   padding: 0px 10px 0px 10px;
-  /*padding: 5px;*/
   border-radius: 6px;
 
   /* Position the tooltip text */
@@ -89,7 +104,6 @@ select {
   bottom: 125%;
   left: 50%;
   margin-left: -60px;
-  /*margin-left: 10%;*/
 
   /* Fade in tooltip */
   opacity: 0;
@@ -100,11 +114,8 @@ select {
 .tooltip .tooltiptext::after {
   content: "";
   position: absolute;
-  /*position: relative;*/
   top: 100%;
-  /*top: 100%;*/
   left: 20%;
-  /*left: 50%;*/
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
